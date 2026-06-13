@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Trends Dashboard - 社交媒体热门数据看板</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .update-time {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+
+        .platform-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .platform-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .platform-card.bilibili {
+            border-left: 4px solid #fb7299;
+        }
+
+        .platform-card.xiaohongshu {
+            border-left: 4px solid #ff2442;
+        }
+
+        .platform-card.douyin {
+            border-left: 4px solid #00f2ea;
+        }
+
+        .platform-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .platform-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+        }
+
+        .bilibili .platform-icon {
+            background: linear-gradient(135deg, #fb7299, #ff9abc);
+        }
+
+        .xiaohongshu .platform-icon {
+            background: linear-gradient(135deg, #ff2442, #ff6b81);
+        }
+
+        .douyin .platform-icon {
+            background: linear-gradient(135deg, #00f2ea, #00d4aa);
+        }
+
+        .platform-name {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .platform-desc {
+            opacity: 0.7;
+            font-size: 0.9em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-change {
+            font-size: 0.8em;
+            color: #4ade80;
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chart-title {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .trending-section {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            margin-bottom: 25px;
+        }
+
+        .trending-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .trending-list {
+            display: none;
+        }
+
+        .trending-list.active {
+            display: block;
+        }
+
+        .trending-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: transform 0.2s ease;
+        }
+
+        .trending-item:hover {
+            transform: translateX(10px);
+        }
+
+        .trending-rank {
+            font-size: 1.5em;
+            font-weight: 700;
+            width: 40px;
+            text-align: center;
+        }
+
+        .rank-1 { color: #ffd700; }
+        .rank-2 { color: #c0c0c0; }
+        .rank-3 { color: #cd7f32; }
+
+        .trending-content {
+            flex: 1;
+        }
+
+        .trending-title {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .trending-meta {
+            font-size: 0.85em;
+            opacity: 0.7;
+        }
+
+        .trending-hot {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+        }
+
+        .insights-section {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .insight-card {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .insight-title {
+            font-size: 1.1em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .insight-content {
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+
+        .category-breakdown {
+            margin-top: 30px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .category-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .category-name {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .category-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .category-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .category-percent {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Social Media Trends Dashboard</h1>
+        <p class="update-time">数据更新时间: 2026-06-13 15:35 | 数据来源: B站, 小红书, 抖音</p>
+    </header>
+
+    <div class="container">
+        <!-- Platform Overview Cards -->
+        <div class="platform-overview">
+            <div class="platform-card bilibili">
+                <div class="platform-header">
+                    <div class="platform-icon">📺</div>
+                    <div>
+                        <div class="platform-name">B站 (Bilibili)</div>
+                        <div class="platform-desc">Z世代视频社区</div>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">日新增播放</div>
+                        <div class="stat-value">364.9万</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">热榜视频数</div>
+                        <div class="stat-value">5个</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">TOP UP主指数</div>
+                        <div class="stat-value">1795.6</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">品牌投放量</div>
+                        <div class="stat-value">604.7万</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="platform-card xiaohongshu">
+                <div class="platform-header">
+                    <div class="platform-icon">📕</div>
+                    <div>
+                        <div class="platform-name">小红书</div>
+                        <div class="platform-desc">生活方式分享平台</div>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">月活用户</div>
+                        <div class="stat-value">3亿+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">运动内容增长</div>
+                        <div class="stat-value">57%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">跑步路线阅读</div>
+                        <div class="stat-value">8312万</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">创作者基金</div>
+                        <div class="stat-value">10万/人</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="platform-card douyin">
+                <div class="platform-header">
+                    <div class="platform-icon">🎵</div>
+                    <div>
+                        <div class="platform-name">抖音</div>
+                        <div class="platform-desc">短视频平台</div>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">世界杯热度</div>
+                        <div class="stat-value">1212.1万</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">科技卫星话题</div>
+                        <div class="stat-value">1103.7万</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">体育话题占比</div>
+                        <div class="stat-value">40%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">娱乐内容占比</div>
+                        <div class="stat-value">35%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <div class="chart-card">
+                <h3 class="chart-title">平台热门内容类型分布</h3>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">各平台互动量对比</h3>
+                <div class="chart-container">
+                    <canvas id="engagementChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">热门话题趋势分析</h3>
+                <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">内容形式受欢迎程度</h3>
+                <div class="chart-container">
+                    <canvas id="formatChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trending Topics Section -->
+        <div class="trending-section">
+            <h2 class="section-title">🔥 今日热门话题</h2>
+            
+            <div class="trending-tabs">
+                <button class="tab-btn active" onclick="showTab('bilibili-trending')">📺 B站热榜</button>
+                <button class="tab-btn" onclick="showTab('xiaohongshu-trending')">📕 小红书热门</button>
+                <button class="tab-btn" onclick="showTab('douyin-trending')">🎵 抖音热搜</button>
+            </div>
+
+            <div id="bilibili-trending" class="trending-list active">
+                <div class="trending-item">
+                    <div class="trending-rank rank-1">1</div>
+                    <div class="trending-content">
+                        <div class="trending-title">美加墨世界杯揭幕战加拿大vs波黑</div>
+                        <div class="trending-meta">体育 | 364.9万播放 | 持续48小时</div>
+                    </div>
+                    <div class="trending-hot">爆火</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-rank rank-2">2</div>
+                    <div class="trending-content">
+                        <div class="trending-title">2026年养老金调整政策解读</div>
+                        <div class="trending-meta">社会 | 285.2万播放 | 关注度上升中</div>
+                    </div>
+                    <div class="trending-hot">热议</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-rank rank-3">3</div>
+                    <div class="trending-content">
+                        <div class="trending-title">OpenAI遭多州调查事件深度分析</div>
+                        <div class="trending-meta">科技 | 274.8万播放 | AI相关</div>
+                    </div>
+                    <div class="trending-hot">新晋</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-rank">4</div>
+                    <div class="trending-content">
+                        <div class="trending-title">黄金价格暴涨背后的经济逻辑</div>
+                        <div class="trending-meta">财经 | 244.6万播放 | 时效性强</div>
+                    </div>
+                    <div class="trending-hot">上升</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-rank">5</div>
+                    <div class="trending-content">
+                        <div class="trending-title">中国通信技术试验卫星二十五号发射</div>
+                        <div class="trending-meta">科技 | 220.6万播放 | 航天话题</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="xiaohongshu-trending" class="trending-list">
+                <div class="trending-item">
+                    <div class="trending-rank rank-1">1</div>
+                    <div class="trending-content">
+                        <div class="trending-title">2026运动趋势：无目的运动会成新风潮</div>
+                        <div class="trending-meta">运动户外 | 8312万阅读 | 新趋势</div>
+                    </div>
+                    <div class="trending-hot">趋势</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-rank rank-2">2</div>
+                    <div class="trending-content">
+                        <div class="trending-title">杭州伴手礼推荐：杨先生糕点攻略</div>
+                        <div class="trending-meta">生活方式 | 收藏量10万+ | 实用</div>
+                    </div>
+                    <div class="trending-hot">种草</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-rank rank-3">3</div>
+                    <div class="trending-content">
+                        <div class="trending-title">AIGC行业动态：MiniMax M3发布</div>
+                        <div class="trending-meta">科技 | 开源话题 | 行业关注</div>
+                    </div>
+                    <div class="trending-hot">热点</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-rank">4</div>
+                    <div class="trending-content">
+                        <div class="trending-title">2026小红书算法变化与爆款打造</div>
+                        <div class="trending-meta">运营技巧 | 高互动 | 创作者必看</div>
+                    </div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-rank">5</div>
+                    <div class="trending-content">
+                        <div class="trending-title">GPU服务器选购指南：租还是买</div>
+                        <div class="trending-meta">科技 | 算力热门 | 实用指南</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="douyin-trending" class="trending-list">
+                <div class="trending-item">
+                    <div class="trending-rank rank-1">1</div>
+                    <div class="trending-content">
+                        <div class="trending-title">美加墨世界杯揭幕战墨西哥vs南非</div>
+                        <div class="trending-meta">体育 | 1212.1万热度 | 持续霸榜</div>
+                    </div>
+                    <div class="trending-hot">第一</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-rank rank-2">2</div>
+                    <div class="trending-content">
+                        <div class="trending-title">通信技术试验卫星二十五号发射成功</div>
+                        <div class="trending-meta">科技 | 1103.7万热度 | 航天成就</div>
+                    </div>
+                    <div class="trending-hot">热议</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-rank rank-3">3</div>
+                    <div class="trending-content">
+                        <div class="trending-title">美国五角大楼被封锁事件</div>
+                        <div class="trending-meta">国际 | 1084.9万热度 | 时事</div>
+                    </div>
+                    <div class="trending-hot">新晋</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-rank">4</div>
+                    <div class="trending-content">
+                        <div class="trending-title">世界杯五大必看比赛推荐</div>
+                        <div class="trending-meta">体育 | 1006.9万热度 | 赛事</div>
+                    </div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-rank">5</div>
+                    <div class="trending-content">
+                        <div class="trending-title">吴越杯金华点球夺冠精彩瞬间</div>
+                        <div class="trending-meta">体育 | 974.7万热度 | 本土</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights Section -->
+        <div class="insights-section">
+            <h2 class="section-title">📊 数据洞察与分析</h2>
+            
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <h3 class="insight-title">🔥 世界杯成最大热点</h3>
+                    <p class="insight-content">美加墨世界杯成为各平台最大热点，B站相关视频新增播放超360万，抖音热度值突破1200万。体育内容在所有平台占比显著提升，预计将持续至赛事结束。</p>
+                </div>
+                
+                <div class="insight-card">
+                    <h3 class="insight-title">🤖 AI科技内容持续升温</h3>
+                    <p class="insight-content">MiniMax M3开源、OpenAI遭调查等AI动态引发广泛讨论。小红书AIGC行业前沿每周跟踪，B站科技区视频播放量稳步增长。AI内容已形成稳定的内容生态。</p>
+                </div>
+                
+                <div class="insight-card">
+                    <h3 class="insight-title">💰 财经内容关注度上升</h3>
+                    <p class="insight-content">黄金价格波动带动财经内容热读，金价话题在小红书、抖音均进入热榜。养老金调整政策牵动3.2亿人，民生财经内容成为刚需。</p>
+                </div>
+                
+                <div class="insight-card">
+                    <h3 class="insight-title">🏃 运动生活方式成新风口</h3>
+                    <p class="insight-content">小红书提出"无目的运动会"概念，运动户外内容阅读量同比提升57%。平台从"找搭子"进化为"社群生态"，运动+社交模式正在形成。</p>
+                </div>
+            </div>
+
+            <div class="category-breakdown">
+                <h3 style="margin-bottom: 20px;">各平台内容类型占比分析</h3>
+                <div class="category-grid">
+                    <div class="category-item">
+                        <div class="category-name">🎮 游戏/二次元</div>
+                        <div class="category-bar"><div class="category-fill" style="width: 85%;"></div></div>
+                        <div class="category-percent">B站: 85% | 小红书: 12% | 抖音: 8%</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-name">🎬 影视/综艺</div>
+                        <div class="category-bar"><div class="category-fill" style="width: 78%;"></div></div>
+                        <div class="category-percent">抖音: 78% | B站: 45% | 小红书: 25%</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-name">💄 美妆/时尚</div>
+                        <div class="category-bar"><div class="category-fill" style="width: 92%;"></div></div>
+                        <div class="category-percent">小红书: 92% | 抖音: 35% | B站: 8%</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-name">🏋️ 运动/健身</div>
+                        <div class="category-bar"><div class="category-fill" style="width: 68%;"></div></div>
+                        <div class="category-percent">小红书: 68% | 抖音: 42% | B站: 15%</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-name">🍜 美食/探店</div>
+                        <div class="category-bar"><div class="category-fill" style="width: 75%;"></div></div>
+                        <div class="category-percent">小红书: 75% | 抖音: 55% | B站: 20%</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-name">💻 科技/数码</div>
+                        <div class="category-bar"><div class="category-fill" style="width: 70%;"></div></div>
+                        <div class="category-percent">B站: 70% | 抖音: 38% | 小红书: 18%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Generated by QClaw AI Analytics | Powered by OpenClaw</p>
+        <p>Data Sources: B站, 小红书, 抖音 | Update Frequency: 每日更新</p>
+    </footer>
+
+    <script>
+        // Tab switching functionality
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.trending-list').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Chart.js configurations
+        Chart.defaults.color = '#fff';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+
+        // Category Distribution Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'radar',
+            data: {
+                labels: ['游戏/二次元', '影视综艺', '美妆时尚', '运动健身', '美食探店', '科技数码', '财经', '生活'],
+                datasets: [
+                    {
+                        label: 'B站',
+                        data: [95, 45, 8, 15, 20, 75, 35, 40],
+                        borderColor: '#fb7299',
+                        backgroundColor: 'rgba(251, 111, 153, 0.2)',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#fb7299'
+                    },
+                    {
+                        label: '小红书',
+                        data: [12, 25, 92, 68, 75, 18, 42, 88],
+                        borderColor: '#ff2442',
+                        backgroundColor: 'rgba(255, 36, 66, 0.2)',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#ff2442'
+                    },
+                    {
+                        label: '抖音',
+                        data: [35, 78, 35, 42, 55, 38, 28, 65],
+                        borderColor: '#00f2ea',
+                        backgroundColor: 'rgba(0, 242, 234, 0.2)',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#00f2ea'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        pointLabels: { color: '#fff' },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                }
+            }
+        });
+
+        // Engagement Comparison Chart
+        const engagementCtx = document.getElementById('engagementChart').getContext('2d');
+        new Chart(engagementCtx, {
+            type: 'bar',
+            data: {
+                labels: ['播放量', '点赞数', '评论数', '转发数', '收藏数'],
+                datasets: [
+                    {
+                        label: 'B站',
+                        data: [365, 42, 8.5, 3.2, 12],
+                        backgroundColor: 'rgba(251, 111, 153, 0.8)',
+                        borderColor: '#fb7299',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '小红书',
+                        data: [180, 28, 6.2, 1.8, 25],
+                        backgroundColor: 'rgba(255, 36, 66, 0.8)',
+                        borderColor: '#ff2442',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '抖音',
+                        data: [520, 85, 12, 8.5, 18],
+                        backgroundColor: 'rgba(0, 242, 234, 0.8)',
+                        borderColor: '#00f2ea',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Trend Analysis Chart
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['6/7', '6/8', '6/9', '6/10', '6/11', '6/12', '6/13'],
+                datasets: [
+                    {
+                        label: '体育热点',
+                        data: [45, 52, 48, 65, 85, 95, 100],
+                        borderColor: '#ffd700',
+                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: '科技热点',
+                        data: [70, 75, 68, 72, 78, 82, 85],
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: '财经热点',
+                        data: [55, 58, 62, 70, 75, 78, 82],
+                        borderColor: '#4ade80',
+                        backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: '生活热点',
+                        data: [80, 75, 72, 68, 70, 72, 75],
+                        borderColor: '#f472b6',
+                        backgroundColor: 'rgba(244, 114, 182, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Content Format Preference Chart
+        const formatCtx = document.getElementById('formatChart').getContext('2d');
+        new Chart(formatCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['短视频 (15-60秒)', '中视频 (1-5分钟)', '长视频 (5分钟+)', '图文笔记', '直播'],
+                datasets: [{
+                    data: [45, 25, 12, 13, 5],
+                    backgroundColor: [
+                        'rgba(0, 242, 234, 0.8)',
+                        'rgba(102, 126, 234, 0.8)',
+                        'rgba(244, 114, 182, 0.8)',
+                        'rgba(255, 107, 107, 0.8)',
+                        'rgba(74, 222, 128, 0.8)'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

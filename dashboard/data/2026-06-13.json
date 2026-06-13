@@ -1,0 +1,175 @@
+{
+  "date": "2026-06-13",
+  "timestamp": "2026-06-13T07:35:00Z",
+  "platforms": {
+    "bilibili": {
+      "name": "B站 (Bilibili)",
+      "hotVideos": [
+        {
+          "rank": 1,
+          "title": "美加墨世界杯揭幕战加拿大vs波黑",
+          "category": "体育",
+          "views": 3649000,
+          "duration": "03:20",
+          "trend": "爆火"
+        },
+        {
+          "rank": 2,
+          "title": "2026年养老金调整政策解读",
+          "category": "社会",
+          "views": 2852000,
+          "duration": "02:55",
+          "trend": "热议"
+        },
+        {
+          "rank": 3,
+          "title": "OpenAI遭多州调查事件深度分析",
+          "category": "科技",
+          "views": 2748000,
+          "duration": "08:10",
+          "trend": "新晋"
+        },
+        {
+          "rank": 4,
+          "title": "黄金价格暴涨背后的经济逻辑",
+          "category": "财经",
+          "views": 2446000,
+          "duration": "13:48",
+          "trend": "上升"
+        },
+        {
+          "rank": 5,
+          "title": "中国通信技术试验卫星二十五号发射",
+          "category": "科技",
+          "views": 2206000,
+          "duration": "14:22:02",
+          "trend": ""
+        }
+      ],
+      "topInfluencers": [
+        { "rank": 1, "followers": "883.6万", "index": 1795.6 },
+        { "rank": 2, "followers": "2395.6万", "index": 1774.6 },
+        { "rank": 3, "followers": "2040.5万", "index": 1758.9 },
+        { "rank": 4, "followers": "2052.4万", "index": 1753.0 },
+        { "rank": 5, "followers": "730.3万", "index": 1742.8 }
+      ],
+      "brandRanking": [
+        { "brand": "应用平台", "views": 6047000 },
+        { "brand": "家居家纺", "views": 5784000 },
+        { "brand": "其他", "views": 5063000 },
+        { "brand": "应用平台", "views": 3446000 },
+        { "brand": "应用平台", "views": 2724000 }
+      ]
+    },
+    "xiaohongshu": {
+      "name": "小红书",
+      "monthlyActiveUsers": "3亿+",
+      "trendingTopics": [
+        {
+          "rank": 1,
+          "title": "2026运动趋势：无目的运动会成新风潮",
+          "category": "运动户外",
+          "reads": 83120000,
+          "growth": "+57%"
+        },
+        {
+          "rank": 2,
+          "title": "杭州伴手礼推荐：杨先生糕点攻略",
+          "category": "生活方式",
+          "reads": 100000,
+          "type": "收藏量"
+        },
+        {
+          "rank": 3,
+          "title": "AIGC行业动态：MiniMax M3发布",
+          "category": "科技",
+          "reads": 50000,
+          "type": "行业关注"
+        },
+        {
+          "rank": 4,
+          "title": "2026小红书算法变化与爆款打造",
+          "category": "运营技巧",
+          "reads": 30000,
+          "type": "高互动"
+        },
+        {
+          "rank": 5,
+          "title": "GPU服务器选购指南：租还是买",
+          "category": "科技",
+          "reads": 25000,
+          "type": "实用指南"
+        }
+      ],
+      "insights": {
+        "sportsGrowth": "57%",
+        "runningRoutesReads": "8312万",
+        "creatorFund": "10万/人",
+        "algorithmChanges": "搜索流量占比上升，真实感要求提高"
+      }
+    },
+    "douyin": {
+      "name": "抖音",
+      "hotTopics": [
+        {
+          "rank": 1,
+          "title": "美加墨世界杯揭幕战墨西哥vs南非",
+          "heat": 12121000,
+          "category": "体育"
+        },
+        {
+          "rank": 2,
+          "title": "美加墨世界杯首场开幕式",
+          "heat": 12097000,
+          "category": "体育"
+        },
+        {
+          "rank": 3,
+          "title": "通信技术试验卫星二十五号发射",
+          "heat": 11037000,
+          "category": "科技"
+        },
+        {
+          "rank": 4,
+          "title": "美国五角大楼被封锁",
+          "heat": 10849000,
+          "category": "国际"
+        },
+        {
+          "rank": 5,
+          "title": "美加墨世界杯五大必看",
+          "heat": 10069000,
+          "category": "体育"
+        }
+      ],
+      "contentDistribution": {
+        "sports": "40%",
+        "entertainment": "35%",
+        "life": "15%",
+        "tech": "10%"
+      }
+    }
+  },
+  "analysis": {
+    "keyInsights": [
+      "世界杯成最大热点，B站相关视频新增播放超360万，抖音热度值突破1200万",
+      "AI科技内容持续升温，MiniMax M3开源、OpenAI遭调查引发广泛讨论",
+      "财经内容关注度上升，黄金价格波动带动相关话题热读",
+      "运动生活方式成新风口，小红书提出'无目的运动会'概念"
+    ],
+    "categoryDistribution": {
+      "game": { "bilibili": 85, "xiaohongshu": 12, "douyin": 8 },
+      "entertainment": { "bilibili": 45, "xiaohongshu": 25, "douyin": 78 },
+      "beauty": { "bilibili": 8, "xiaohongshu": 92, "douyin": 35 },
+      "sports": { "bilibili": 15, "xiaohongshu": 68, "douyin": 42 },
+      "food": { "bilibili": 20, "xiaohongshu": 75, "douyin": 55 },
+      "tech": { "bilibili": 70, "xiaohongshu": 18, "douyin": 38 }
+    }
+  },
+  "dataCollectionStatus": {
+    "lastUpdated": "2026-06-13T15:35:00+08:00",
+    "nextScheduledUpdate": "2026-06-14T09:00:00+08:00",
+    "autoCollectEnabled": false,
+    "notes": "初始数据收集，包含B站、小红书、抖音三大平台热门数据"
+  }
+}
