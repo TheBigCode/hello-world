@@ -3,77 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World - 我的第一个网页</title>
+    <title>AI Video Gallery - 人工智能视频创作</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: #fff;
         }
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 50px 60px;
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: float 3s ease-in-out infinite;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin-bottom: 40px;
+            border-radius: 0 0 50px 50px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+
         h1 {
             font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .video-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+
+        .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-info {
+            padding: 25px;
+        }
+
+        .video-title {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .video-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .video-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+
+        .features {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-item {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature-item h3 {
             color: #667eea;
             margin-bottom: 10px;
-        }
-        .emoji {
-            font-size: 4em;
-            margin: 20px 0;
-        }
-        p {
-            color: #666;
             font-size: 1.2em;
-            margin-bottom: 20px;
         }
-        .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: transform 0.2s;
+
+        .feature-item p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
         }
-        .btn:hover {
-            transform: scale(1.05);
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            margin-top: 40px;
         }
-        .info {
-            margin-top: 30px;
-            color: #999;
+
+        footer p {
+            margin: 10px 0;
+            opacity: 0.8;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tech-badge {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 8px 20px;
+            border-radius: 25px;
             font-size: 0.9em;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>Hello World!</h1>
-        <div class="emoji">🌍</div>
-        <p>我的第一个网页已成功部署到 GitHub Pages</p>
-        <a href="https://github.com/TheBigCode" class="btn" target="_blank">查看我的 GitHub</a>
-        <div class="info">
-            <p>部署时间：2026-06-13</p>
-            <p>托管平台：GitHub Pages</p>
+    <header>
+        <h1>AI Video Gallery</h1>
+        <p class="subtitle">探索人工智能创造的动态视觉艺术</p>
+    </header>
+
+    <div class="container">
+        <div class="video-grid">
+            <div class="video-card">
+                <div class="video-wrapper">
+                    <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%23667eea' width='16' height='9'/%3E%3Ctext x='8' y='5' text-anchor='middle' fill='white' font-size='3'%3EGradient%3C/text%3E%3C/svg%3E">
+                        <source src="videos/gradient.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-info">
+                    <h3 class="video-title">Gradient Flow</h3>
+                    <p class="video-description">流动的渐变色彩，如同彩虹般绚丽的光影变换，展现色彩的无限可能</p>
+                    <div class="video-meta">
+                        <span class="badge">5秒</span>
+                        <span>1.84 MB</span>
+                        <span>动态渐变</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-wrapper">
+                    <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%2316213e' width='16' height='9'/%3E%3Ctext x='8' y='5' text-anchor='middle' fill='white' font-size='3'%3EParticles%3C/text%3E%3C/svg%3E">
+                        <source src="videos/particles.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-info">
+                    <h3 class="video-title">Particle Dance</h3>
+                    <p class="video-description">100个粒子在空间中自由舞动，绘制出光的轨迹，展现粒子系统的动态之美</p>
+                    <div class="video-meta">
+                        <span class="badge">5秒</span>
+                        <span>1.26 MB</span>
+                        <span>粒子特效</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-wrapper">
+                    <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%230f3460' width='16' height='9'/%3E%3Ctext x='8' y='5' text-anchor='middle' fill='white' font-size='3'%3EWaves%3C/text%3E%3C/svg%3E">
+                        <source src="videos/waves.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-info">
+                    <h3 class="video-title">Cyber Waves</h3>
+                    <p class="video-description">多层波浪交织在一起，如同数字海洋中的潮汐涌动，赛博朋克风格</p>
+                    <div class="video-meta">
+                        <span class="badge">5秒</span>
+                        <span>9.52 MB</span>
+                        <span>波浪动画</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-wrapper">
+                    <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%231a1a2e' width='16' height='9'/%3E%3Ctext x='8' y='5' text-anchor='middle' fill='white' font-size='3'%3EGeometry%3C/text%3E%3C/svg%3E">
+                        <source src="videos/geometry.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-info">
+                    <h3 class="video-title">Geometric Dreams</h3>
+                    <p class="video-description">旋转的几何图形，多层次的视觉效果，展现抽象几何艺术的魅力</p>
+                    <div class="video-meta">
+                        <span class="badge">5秒</span>
+                        <span>6.33 MB</span>
+                        <span>几何动画</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="video-wrapper">
+                    <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%23000f00' width='16' height='9'/%3E%3Ctext x='8' y='5' text-anchor='middle' fill='%2300ff00' font-size='3'%3EMatrix%3C/text%3E%3C/svg%3E">
+                        <source src="videos/matrix.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-info">
+                    <h3 class="video-title">Matrix Rain</h3>
+                    <p class="video-description">经典的矩阵数字雨效果，致敬《黑客帝国》，重现绿色代码的世界</p>
+                    <div class="video-meta">
+                        <span class="badge">5秒</span>
+                        <span>1.10 MB</span>
+                        <span>矩阵特效</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>技术特点</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h3>Python + OpenCV</h3>
+                    <p>使用 Python 和 OpenCV 计算机视觉库生成高质量视频，支持多种视频编码格式</p>
+                </div>
+                <div class="feature-item">
+                    <h3>实时渲染</h3>
+                    <p>每帧实时渲染，支持自定义分辨率和帧率，生成过程快速高效</p>
+                </div>
+                <div class="feature-item">
+                    <h3>多种特效</h3>
+                    <p>支持粒子系统、波浪动画、几何变换、矩阵数字雨等多种视觉效果</p>
+                </div>
+                <div class="feature-item">
+                    <h3>AI 驱动</h3>
+                    <p>结合人工智能算法，自动生成独特的视觉效果，每一帧都是艺术</p>
+                </div>
+            </div>
         </div>
     </div>
+
+    <footer>
+        <p>Generated by QClaw AI | Powered by OpenClaw</p>
+        <p>Video Generation: Python + OpenCV | Web: HTML5 + CSS3</p>
+        <div class="tech-stack">
+            <span class="tech-badge">Python</span>
+            <span class="tech-badge">OpenCV</span>
+            <span class="tech-badge">HTML5</span>
+            <span class="tech-badge">CSS3</span>
+            <span class="tech-badge">GitHub Pages</span>
+        </div>
+    </footer>
 </body>
 </html>
