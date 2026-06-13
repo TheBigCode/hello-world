@@ -1,0 +1,127 @@
+{
+  "updateTime": "2026-06-13T15:42:00+08:00",
+  "platform": "B站 (Bilibili)",
+  "hotVideos": [
+    {
+      "rank": 1,
+      "title": "美加墨世界杯揭幕战：加拿大 vs 波黑 精彩集锦",
+      "category": "体育",
+      "duration": "03:20",
+      "views": 3649000,
+      "comments": 82000,
+      "likes": 420000,
+      "uploader": "央视体育官方",
+      "fans": 8836000,
+      "trend": "爆火"
+    },
+    {
+      "rank": 2,
+      "title": "2026年养老金调整政策深度解读：3.2亿人关注",
+      "category": "社会",
+      "duration": "02:55",
+      "views": 2852000,
+      "comments": 65000,
+      "likes": 350000,
+      "uploader": "央视新闻官方",
+      "fans": 23956000,
+      "trend": "热议"
+    },
+    {
+      "rank": 3,
+      "title": "OpenAI遭美国多州调查！AI监管风暴来临？",
+      "category": "科技",
+      "duration": "08:10",
+      "views": 2748000,
+      "comments": 58000,
+      "likes": 320000,
+      "uploader": "观察者网官方",
+      "fans": 7304000,
+      "trend": "新晋"
+    },
+    {
+      "rank": 4,
+      "title": "黄金价格暴涨至1238元/克！背后经济逻辑揭秘",
+      "category": "财经",
+      "duration": "13:48",
+      "views": 2446000,
+      "comments": 42000,
+      "likes": 280000,
+      "uploader": "财经观察",
+      "fans": 5200000,
+      "trend": "上升"
+    },
+    {
+      "rank": 5,
+      "title": "中国通信技术试验卫星二十五号发射成功全程回顾",
+      "category": "科技",
+      "duration": "14:22:02",
+      "views": 2206000,
+      "comments": 38000,
+      "likes": 250000,
+      "uploader": "中国航天",
+      "fans": 6800000,
+      "trend": ""
+    },
+    {
+      "rank": 6,
+      "title": "【原神】5.2版本前瞻直播 全新地图与角色揭晓",
+      "category": "游戏",
+      "duration": "25:30",
+      "views": 1953000,
+      "comments": 75000,
+      "likes": 380000,
+      "uploader": "原神官方",
+      "fans": 20524000,
+      "trend": "热门"
+    },
+    {
+      "rank": 7,
+      "title": "《夜幕之下》主题曲MV发布 超燃画面引发热议",
+      "category": "音乐",
+      "duration": "18:45",
+      "views": 1150000,
+      "comments": 28000,
+      "likes": 150000,
+      "uploader": "夜幕之下官方",
+      "fans": 761000,
+      "trend": "上升"
+    },
+    {
+      "rank": 8,
+      "title": "我用AI生成巨型建筑！B站爆火背后的创作故事",
+      "category": "科技",
+      "duration": "32:15",
+      "views": 980000,
+      "comments": 15000,
+      "likes": 120000,
+      "uploader": "巨构AI",
+      "fans": 150000,
+      "trend": "涨粉王"
+    }
+  ],
+  "topInfluencers": [
+    { "rank": 1, "name": "哔哩哔哩番剧区官方", "fans": 8836000, "index": 1795.6, "category": "番剧连载" },
+    { "rank": 2, "name": "央视新闻官方", "fans": 23956000, "index": 1774.6, "category": "生活日常" },
+    { "rank": 3, "name": "2025百大UP主", "fans": 20394000, "index": 1758.9, "category": "游戏单机" },
+    { "rank": 4, "name": "原神官方账号", "fans": 20524000, "index": 1753.0, "category": "手机游戏" },
+    { "rank": 5, "name": "观察者网官方", "fans": 7304000, "index": 1742.8, "category": "科学科普" }
+  ],
+  "hotTags": [
+    "世界杯", "美加墨2026", "AI人工智能", "游戏实况", "影视解说",
+    "财经热点", "科技数码", "动画番剧", "音乐MV", "知识科普",
+    "运动健身", "美食探店"
+  ],
+  "brandRanking": [
+    { "brand": "应用平台", "views": 6047000 },
+    { "brand": "家居家纺", "views": 5784000 },
+    { "brand": "其他", "views": 5063000 },
+    { "brand": "应用平台", "views": 3446000 },
+    { "brand": "应用平台", "views": 2724000 }
+  ],
+  "insights": [
+    "世界杯成为最大热点，体育内容播放量创新高",
+    "AI科技内容持续升温，OpenAI事件引发广泛讨论",
+    "财经内容关注度上升，金价波动带动相关话题热度",
+    "新游《夜幕之下》公测，一周涨粉超20万"
+  ]
+}
