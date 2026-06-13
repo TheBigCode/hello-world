@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 生成艺术画廊</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover img {
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .card-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(255,255,255,0.3);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: #667eea;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 AI 生成艺术画廊</h1>
+            <p class="subtitle">探索人工智能创造的视觉艺术</p>
+        </header>
+
+        <div class="gallery">
+            <div class="card" onclick="openModal('images/gen_cyber_city.png', '赛博城市')">
+                <img src="images/gen_cyber_city.png" alt="赛博城市">
+                <div class="card-content">
+                    <h3 class="card-title">🌃 赛博城市</h3>
+                    <p class="card-description">未来主义风格的霓虹城市景观，融合赛博朋克美学与数字艺术</p>
+                </div>
+            </div>
+
+            <div class="card" onclick="openModal('images/gen_fluid_gradient.png', '流体渐变')">
+                <img src="images/gen_fluid_gradient.png" alt="流体渐变">
+                <div class="card-content">
+                    <h3 class="card-title">🎨 流体渐变</h3>
+                    <p class="card-description">柔和色彩流动的抽象艺术，展现色彩的无限可能性</p>
+                </div>
+            </div>
+
+            <div class="card" onclick="openModal('images/gen_kaleidoscope.png', '万花筒')">
+                <img src="images/gen_kaleidoscope.png" alt="万花筒">
+                <div class="card-content">
+                    <h3 class="card-title">✨ 万花筒</h3>
+                    <p class="card-description">对称几何图案的视觉盛宴，如同透过万花筒看到的奇妙世界</p>
+                </div>
+            </div>
+
+            <div class="card" onclick="openModal('images/gen_pixel_landscape.png', '像素风景')">
+                <img src="images/gen_pixel_landscape.png" alt="像素风景">
+                <div class="card-content">
+                    <h3 class="card-title">🏞️ 像素风景</h3>
+                    <p class="card-description">复古像素艺术风格的自然景观，致敬经典游戏美学</p>
+                </div>
+            </div>
+
+            <div class="card" onclick="openModal('images/gen_data_poster.png', '数据海报')">
+                <img src="images/gen_data_poster.png" alt="数据海报">
+                <div class="card-content">
+                    <h3 class="card-title">📊 数据海报</h3>
+                    <p class="card-description">数据可视化艺术，将信息转化为美的视觉呈现</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>🤖 由 QClaw AI 生成 | Powered by OpenClaw</p>
+            <p style="margin-top: 10px; opacity: 0.8;">每张图片都由 AI 算法随机创作，独一无二</p>
+        </footer>
+    </div>
+
+    <div class="modal" id="modal" onclick="closeModal()">
+        <span class="modal-close">&times;</span>
+        <img id="modal-img" src="" alt="">
+    </div>
+
+    <script>
+        function openModal(imageSrc, title) {
+            const modal = document.getElementById('modal');
+            const modalImg = document.getElementById('modal-img');
+            modal.classList.add('active');
+            modalImg.src = imageSrc;
+            modalImg.alt = title;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('active');
+        }
+
+        // ESC 键关闭模态框
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
