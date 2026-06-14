@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>外卖智囊 — 菜单优化引擎</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#0f0f1a;color:#e0e0e0}
+        .topbar{position:sticky;top:0;z-index:100;background:#1a1a2e;border-bottom:1px solid rgba(255,255,255,.08);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+        .topbar-title{font-size:1em;font-weight:600;color:#fff}
+        .topbar-sub{font-size:.72em;color:rgba(255,255,255,.4)}
+        .back-btn{background:rgba(255,255,255,.08);border:none;color:#fff;padding:6px 12px;border-radius:8px;font-size:.85em;cursor:pointer}
+        .main{padding:16px}
+        .summary-card{background:linear-gradient(135deg,rgba(255,107,53,.15),rgba(255,140,66,.05));border:1px solid rgba(255,107,53,.2);border-radius:14px;padding:18px;margin-bottom:18px}
+        .summary-title{font-size:.95em;font-weight:600;color:#ff8c42;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+        .summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+        .summary-item{text-align:center;padding:12px;background:rgba(255,255,255,.04);border-radius:10px}
+        .summary-val{font-size:1.4em;font-weight:700;color:#fff}
+        .summary-label{font-size:.72em;color:rgba(255,255,255,.5);margin-top:4px}
+        .section-title{font-size:.85em;font-weight:600;color:rgba(255,255,255,.6);margin:18px 0 10px}
+        .dish-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin-bottom:12px}
+        .dish-top{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+        .dish-rank{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9em;flex-shrink:0}
+        .r1{background:linear-gradient(135deg,#ff6b35,#ff8c42);color:#fff}.r2{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff}.r3{background:linear-gradient(135deg,#4ade80,#22c55e);color:#fff}.rn{background:rgba(255,255,255,.08);color:rgba(255,255,255,.5)}
+        .dish-info{flex:1;min-width:0}
+        .dish-name{font-weight:600;color:#fff;margin-bottom:3px;font-size:.95em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .dish-meta{font-size:.72em;color:rgba(255,255,255,.5)}
+        .dish-score{text-align:right;flex-shrink:0}
+        .score-val{font-size:1.2em;font-weight:700;color:#4ade80}
+        .score-label{font-size:.65em;color:rgba(255,255,255,.4)}
+        .dish-stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+        .stat-pill{font-size:.72em;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.6)}
+        .stat-pill span{color:#fff;font-weight:600}
+        .dish-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+        .tag{font-size:.7em;padding:3px 10px;border-radius:8px}
+        .tag.green{background:rgba(74,222,128,.15);color:#4ade80}.tag.red{background:rgba(255,107,107,.15);color:#ff6b6b}.tag.yellow{background:rgba(251,191,36,.15);color:#fbbf24}.tag.blue{background:rgba(79,172,254,.15);color:#4facfe}
+        .ai-tip{background:rgba(255,140,66,.08);border-radius:10px;padding:12px;font-size:.82em;color:#ff8c42;line-height:1.6}
+        .ai-tip strong{display:block;margin-bottom:4px;font-size:.85em}
+        .dish-actions{display:flex;gap:8px;margin-top:10px}
+        .btn{flex:1;padding:9px 14px;border-radius:10px;border:none;font-size:.85em;font-weight:600;cursor:pointer;text-align:center}
+        .btn-primary{background:linear-gradient(135deg,#ff6b35,#ff8c42);color:#fff}.btn-secondary{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7)}
+        .tabs{display:flex;gap:0;background:rgba(255,255,255,.04);border-radius:12px;padding:4px;margin:0 0 16px}
+        .tab{flex:1;text-align:center;padding:10px 0;font-size:.85em;border-radius:10px;cursor:pointer;color:rgba(255,255,255,.5);transition:all .2s}
+        .tab.active{background:linear-gradient(135deg,#ff6b35,#ff8c42);color:#fff;font-weight:600}
+        .tab-content{display:none}.tab-content.active{display:block}
+        .suggestion-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin-bottom:12px;border-left:4px solid #4ade80}
+        .sug-title{font-weight:600;color:#fff;margin-bottom:6px;font-size:.95em}
+        .sug-desc{font-size:.82em;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:8px}
+        .sug-effect{font-size:.78em;color:#4ade80;margin-bottom:10px}
+        .sug-effort{font-size:.72em;color:rgba(255,255,255,.4)}
+        @media(min-width:768px){.main{max-width:600px;margin:0 auto}}
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <button class="back-btn" onclick="history.back()">← 返回</button>
+    <div style="text-align:center">
+        <div class="topbar-title">🍜 菜单优化引擎</div>
+        <div class="topbar-sub">黄焖鸡米饭（XX路店）· 共23道菜</div>
+    </div>
+    <div style="width:60px"></div>
+</div>
+
+<div class="main">
+
+<div class="summary-card">
+    <div class="summary-title">📊 菜单健康度总览</div>
+    <div class="summary-grid">
+        <div class="summary-item"><div class="summary-val" style="color:#4ade80">8.7</div><div class="summary-label">综合得分</div></div>
+        <div class="summary-item"><div class="summary-val">¥28.5</div><div class="summary-label">平均定价</div></div>
+        <div class="summary-item"><div class="summary-val" style="color:#ff8c42">5</div><div class="summary-label">建议优化</div></div>
+        <div class="summary-item"><div class="summary-val" style="color:#4ade80">18</div><div class="summary-label">表现良好</div></div>
+    </div>
+</div>
+
+<div class="tabs">
+    <div class="tab active" onclick="switchTab('rank')">菜品排行</div>
+    <div class="tab" onclick="switchTab('boost')">主推建议</div>
+    <div class="tab" onclick="switchTab('fix')">待优化</div>
+</div>
+
+<div class="tab-content active" id="tab-rank">
+
+<div class="section-title">🏆 菜品表现排行</div>
+
+<div class="dish-card">
+    <div class="dish-top">
+        <div class="dish-rank r1">1</div>
+        <div class="dish-info">
+            <div class="dish-name">黄焖鸡米饭（大份）</div>
+            <div class="dish-meta">¥32 · 毛利率 62% · 成本 ¥12.2</div>
+        </div>
+        <div class="dish-score"><div class="score-val">9.2</div><div class="score-label">综合分</div></div>
+    </div>
+    <div class="dish-stats">
+        <div class="stat-pill">日均 <span>32单</span></div>
+        <div class="stat-pill">点击率 <span>12.3%</span></div>
+        <div class="stat-pill">转化率 <span>38%</span></div>
+        <div class="stat-pill">复购率 <span>42%</span></div>
+    </div>
+    <div class="dish-tags">
+        <span class="tag green">🔥 爆款</span>
+        <span class="tag green">💰 高利润</span>
+    </div>
+    <div class="ai-tip"><strong>🤖 AI建议：</strong>继续保持，建议每月更换一次主图保持新鲜感，可考虑在高峰期设置为"本店招牌"置顶展示。</div>
+</div>
+
+<div class="dish-card">
+    <div class="dish-top">
+        <div class="dish-rank r2">2</div>
+        <div class="dish-info">
+            <div class="dish-name">黄焖鸡套餐A</div>
+            <div class="dish-meta">¥28 · 毛利率 58% · 成本 ¥11.8</div>
+        </div>
+        <div class="dish-score"><div class="score-val" style="color:#fbbf24">8.1</div><div class="score-label">综合分</div></div>
+    </div>
+    <div class="dish-stats">
+        <div class="stat-pill">日均 <span>24单</span></div>
+        <div class="stat-pill">点击率 <span>9.8%</span></div>
+        <div class="stat-pill">转化率 <span>32%</span></div>
+        <div class="stat-pill">复购率 <span>35%</span></div>
+    </div>
+    <div class="ai-tip"><strong>🤖 AI建议：</strong>表现良好，建议将"黄焖鸡套餐A"与"黄焖鸡米饭（大份）"进行捆绑销售，设置"双份优惠"，预计可提升客单价¥8-12。</div>
+</div>
+
+<div class="dish-card">
+    <div class="dish-top">
+        <div class="dish-rank r3">3</div>
+        <div class="dish-info">
+            <div class="dish-name">酸辣土豆丝</div>
+            <div class="dish-meta">¥8 · 毛利率 71% · 成本 ¥2.3</div>
+        </div>
+        <div class="dish-score"><div class="score-val">7.8</div><div class="score-label">综合分</div></div>
+    </div>
+    <div class="dish-stats">
+        <div class="stat-pill">日均 <span>12单</span></div>
+        <div class="stat-pill">点击率 <span>6.1%</span></div>
+        <div class="stat-pill">转化率 <span>28%</span></div>
+        <div class="stat-pill">复购率 <span>28%</span></div>
+    </div>
+    <div class="ai-tip"><strong>🤖 AI建议：</strong>小菜中表现最佳，建议设置为"必点小菜"推荐位，同时搭配主菜展示"加¥8升级套餐"，提升加购率。</div>
+</div>
+
+<div class="dish-card">
+    <div class="dish-top">
+        <div class="dish-rank rn">4</div>
+        <div class="dish-info">
+            <div class="dish-name">黄焖鸡套餐B</div>
+            <div class="dish-meta">¥29.9 · 毛利率 55% · 成本 ¥13.5</div>
+        </div>
+        <div class="dish-score"><div class="score-val" style="color:#ff6b6b">4.2</div><div class="score-label">综合分</div></div>
+    </div>
+    <div class="dish-stats">
+        <div class="stat-pill">日均 <span>8单</span></div>
+        <div class="stat-pill">点击率 <span style="color:#ff6b6b">3.2%</span></div>
+        <div class="stat-pill">转化率 <span style="color:#ff6b6b">15%</span></div>
+        <div class="stat-pill">复购率 <span>18%</span></div>
+    </div>
+    <div class="dish-tags">
+        <span class="tag red">⚠️ 点击率低</span>
+        <span class="tag yellow">📍 价格偏高</span>
+    </div>
+    <div class="ai-tip"><strong>🤖 AI紧急建议：</strong>点击率仅3.2%（同类平均8.5%），价格¥29.9高于竞品。建议：①调价至¥25.9 或 ②更换主图为实拍图（目前疑似盗图） 或 ③下架重新设计套餐内容。</div>
+    <div class="dish-actions">
+        <button class="btn btn-primary" onclick="alert('已提交调价申请，美团10分钟后生效')">⚡ 调价至¥25.9</button>
+        <button class="btn btn-secondary" onclick="alert('请上传新的菜品图片')">📷 更换主图</button>
+    </div>
+</div>
+
+<div class="dish-card">
+    <div class="dish-top">
+        <div class="dish-rank rn">5</div>
+        <div class="dish-info">
+            <div class="dish-name">可乐</div>
+            <div class="dish-meta">¥6 · 毛利率 48% · 成本 ¥3.1</div>
+        </div>
+        <div class="dish-score"><div class="score-val" style="color:#ff6b6b">3.1</div><div class="score-label">综合分</div></div>
+    </div>
+    <div class="dish-stats">
+        <div class="stat-pill">日均 <span>3单</span></div>
+        <div class="stat-pill">点击率 <span style="color:#ff6b6b">2.1%</span></div>
+        <div class="stat-pill">转化率 <span style="color:#ff6b6b">18%</span></div>
+        <div class="stat-pill">复购率 <span>15%</span></div>
+    </div>
+    <div class="dish-tags">
+        <span class="tag red">⚠️ 滞销</span>
+    </div>
+    <div class="ai-tip"><strong>🤖 AI建议：</strong>饮料类整体表现差（可乐仅3单/天）。建议：①将可乐设为"加¥3换购"而非单独售卖 或 ②下架可乐，上新"柠檬水/酸梅汤"夏季饮品（预计日增5-8单）。</div>
+</div>
+
+</div>
+
+<div class="tab-content" id="tab-boost">
+    <div class="section-title">⬆️ 主推建议</div>
+    <div class="suggestion-card">
+        <div class="sug-title">🔥 将"黄焖鸡米饭（大份）"设为招牌置顶</div>
+        <div class="sug-desc">该菜品综合得分9.2，点击率和转化率均为最高。建议在菜单顶部设置"店长推荐"标签，并设置为主图展示首位。</div>
+        <div class="sug-effect">✅ 预计提升曝光点击率 +15%，日增 5-8 单</div>
+        <div class="sug-effort">📌 操作难度：简单 · 预计耗时：2分钟</div>
+        <div class="dish-actions"><button class="btn btn-primary" onclick="alert('已设置！请在美团后台确认')">⚡ 一键执行</button></div>
+    </div>
+    <div class="suggestion-card">
+        <div class="sug-title">🍱 推出"黄焖鸡+小菜"超值套餐</div>
+        <div class="sug-desc">将黄焖鸡（A/B套餐）+ 酸辣土豆丝 + 可乐打包，原价¥42，现价¥35。预计可提升客单价¥8，同时带动小菜销量。</div>
+        <div class="sug-effect">✅ 预计日增套餐订单 10-15 单，客单价提升 ¥8</div>
+        <div class="sug-effort">📌 操作难度：中等 · 预计耗时：10分钟</div>
+        <div class="dish-actions"><button class="btn btn-primary" onclick="alert('套餐方案已生成，可在后台配置')">📋 查看套餐方案</button></div>
+    </div>
+    <div class="suggestion-card">
+        <div class="sug-title">☀️ 上新"柠檬水"夏季饮品</div>
+        <div class="sug-desc">当前饮料类表现差，可乐仅3单/天。建议下架可乐，上新"柠檬水"（¥8），成本¥2.5，毛利率69%。夏季解腻属性强，预计日增5-8单。</div>
+        <div class="sug-effect">✅ 预计日增饮品订单 5-8 单，毛利率 69%</div>
+        <div class="sug-effort">📌 操作难度：简单 · 预计耗时：5分钟</div>
+        <div class="dish-actions"><button class="btn btn-primary" onclick="alert('新品方案已生成，请在美团后台添加')">📋 查看新品方案</button></div>
+    </div>
+</div>
+
+<div class="tab-content" id="tab-fix">
+    <div class="section-title">⚠️ 待优化菜品</div>
+    <div class="suggestion-card" style="border-left-color:#ff6b6b">
+        <div class="sug-title">黄焖鸡套餐B — 调价或优化</div>
+        <div class="sug-desc">点击率3.2%（同类平均8.5%），价格¥29.9高于竞品。建议调价至¥25.9或更换主图，预计可提升日单量12-18单。</div>
+        <div class="sug-effect">✅ 预计日增 12-18 单，月增收 ¥10,500-15,750</div>
+        <div class="sug-effort">📌 紧急程度：高 · 每天损失约 ¥350-520</div>
+        <div class="dish-actions">
+            <button class="btn btn-primary" onclick="alert('调价申请已提交')">⚡ 调价至¥25.9</button>
+            <button class="btn btn-secondary" onclick="alert('请上传新主图')">📷 换主图</button>
+        </div>
+    </div>
+    <div class="suggestion-card" style="border-left-color:#fbbf24">
+        <div class="sug-title">可乐 — 改为换购或下架</div>
+        <div class="sug-desc">日均仅3单，毛利率48%也偏低。建议改为"加¥3换购"，不单独展示，预计可提升加购率。</div>
+        <div class="sug-effect">✅ 预计提升加购率 8%，日增饮品收益 ¥24</div>
+        <div class="sug-effort">📌 紧急程度：中 · 每天损失约 ¥18</div>
+        <div class="dish-actions"><button class="btn btn-primary" onclick="alert('已改为换购模式')">⚡ 改为换购</button></div>
+    </div>
+</div>
+
+</div>
+
+<script>
+function switchTab(tab){
+    document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['rank','boost','fix'][i]===tab));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    document.getElementById('tab-'+tab).classList.add('active');
+}
+</script>
+
+</body>
+</html>

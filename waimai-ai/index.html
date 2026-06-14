@@ -2,493 +2,291 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>外卖智囊 — AI外卖销量提升助手</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            background: #f5f5f5;
-            color: #333;
-        }
-
-        /* Header */
-        header {
-            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
-            color: #fff;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(255,107,53,0.3);
-        }
-        .nav {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 20px;
-        }
-        .logo { font-size: 1.5em; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .nav-links { display: flex; gap: 25px; }
-        .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-size: 0.95em; transition: color 0.2s; }
-        .nav-links a:hover { color: #fff; }
-
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#0f0f1a;color:#e0e0e0;overflow-x:hidden}
         /* Hero */
-        .hero {
-            background: linear-gradient(135deg, #ff6b35 0%, #f093fb 100%);
-            color: #fff;
-            padding: 90px 20px;
-            text-align: center;
-        }
-        .hero h1 { font-size: 3.2em; margin-bottom: 15px; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .hero p { font-size: 1.3em; margin-bottom: 10px; opacity: 0.95; }
-        .hero-sub { font-size: 1em; opacity: 0.8; margin-bottom: 40px; }
-        .hero-badges { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 35px; }
-        .badge {
-            background: rgba(255,255,255,0.2);
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            backdrop-filter: blur(10px);
-        }
-        .hero-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
-        .btn-white {
-            background: #fff; color: #ff6b35; padding: 15px 40px;
-            border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 1.1em;
-            transition: transform 0.2s, box-shadow 0.2s; display: inline-block;
-        }
-        .btn-white:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .btn-outline {
-            background: transparent; color: #fff; padding: 15px 40px;
-            border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 1.1em;
-            border: 2px solid rgba(255,255,255,0.5); transition: all 0.2s; display: inline-block;
-        }
-        .btn-outline:hover { background: rgba(255,255,255,0.15); }
-
-        /* Sections */
-        .section { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
-        .section-title { text-align: center; font-size: 2.2em; margin-bottom: 15px; color: #333; }
-        .section-sub { text-align: center; color: #888; margin-bottom: 60px; font-size: 1.1em; }
-
-        /* Pain */
-        .pains { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; }
-        .pain-card {
-            background: #fff; border-radius: 16px; padding: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06); transition: transform 0.2s;
-        }
-        .pain-card:hover { transform: translateY(-5px); }
-        .pain-icon { font-size: 2.5em; margin-bottom: 15px; }
-        .pain-card h3 { font-size: 1.15em; margin-bottom: 10px; color: #ff6b35; }
-        .pain-card p { color: #666; line-height: 1.7; }
-
-        /* Features */
-        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; }
-        .feature-card {
-            background: #fff; border-radius: 16px; overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06); transition: transform 0.2s;
-        }
-        .feature-card:hover { transform: translateY(-5px); }
-        .fh { padding: 25px; color: #fff; font-size: 1.25em; font-weight: 600; }
-        .fh.c1 { background: linear-gradient(135deg, #ff6b35, #ff8c42); }
-        .fh.c2 { background: linear-gradient(135deg, #667eea, #764ba2); }
-        .fh.c3 { background: linear-gradient(135deg, #f093fb, #f5576c); }
-        .fh.c4 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-        .fh.c5 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
-        .fh.c6 { background: linear-gradient(135deg, #fa709a, #fee140); }
-        .fb { padding: 25px; }
-        .fb ul { list-style: none; }
-        .fb li { padding: 10px 0; border-bottom: 1px solid #f0f0f0; display: flex; gap: 10px; line-height: 1.5; }
-        .fb li:last-child { border-bottom: none; }
-        .li-ok { color: #ff6b35; font-weight: 700; flex-shrink: 0; }
-
-        /* Dashboard Preview */
-        .dash-preview {
-            background: linear-gradient(180deg, #1a1a2e 0%, #2d2d4e 100%);
-            border-radius: 20px; padding: 35px; color: #fff; margin-top: 40px;
-        }
-        .dp-title { font-size: 1.4em; margin-bottom: 25px; color: #ff8c42; }
-        .dp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 25px; }
-        .dp-card { background: rgba(255,255,255,0.08); border-radius: 14px; padding: 22px; }
-        .dp-label { font-size: 0.85em; opacity: 0.7; margin-bottom: 8px; }
-        .dp-value { font-size: 2em; font-weight: 700; }
-        .dp-trend { font-size: 0.85em; margin-top: 6px; }
-        .t-up { color: #4ade80; }
-        .t-down { color: #ff6b6b; }
-        .t-warn { color: #fbbf24; }
-
-        .ai-box {
-            background: linear-gradient(135deg, rgba(255,107,53,0.12), rgba(255,140,66,0.06));
-            border: 1px solid rgba(255,107,53,0.25);
-            border-radius: 14px; padding: 22px; margin-top: 20px;
-        }
-        .ai-box h4 { color: #ff8c42; margin-bottom: 14px; font-size: 1.1em; }
-        .ai-box ul { list-style: none; }
-        .ai-box li { padding: 9px 0; display: flex; gap: 10px; line-height: 1.6; }
-        .ai-icon { flex-shrink: 0; }
-
-        /* How it works */
-        .steps { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
-        .step {
-            background: #fff; border-radius: 16px; padding: 35px 25px; text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06); flex: 1; min-width: 220px; max-width: 280px;
-        }
-        .step-num {
-            width: 50px; height: 50px; background: linear-gradient(135deg, #ff6b35, #ff8c42);
-            color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.3em; font-weight: 700; margin: 0 auto 18px;
-        }
-        .step h3 { margin-bottom: 10px; color: #333; }
-        .step p { color: #777; line-height: 1.6; }
-
-        /* Results */
-        .results {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;
-        }
-        .result-card {
-            background: #fff; border-radius: 16px; padding: 30px; text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        }
-        .result-icon { font-size: 3em; margin-bottom: 15px; }
-        .result-val { font-size: 2.5em; font-weight: 700; color: #ff6b35; margin-bottom: 5px; }
-        .result-label { color: #888; }
-
+        .hero{background:linear-gradient(135deg,#1a1a2e 0%,#2d1b3d 100%);padding:40px 20px 30px;text-align:center;border-bottom:1px solid rgba(255,255,255,.06)}
+        .hero-logo{font-size:2.5em;margin-bottom:10px}
+        .hero h1{font-size:1.5em;font-weight:700;color:#fff;margin-bottom:6px}
+        .hero p{font-size:.9em;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:20px}
+        .hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+        .btn{flex:1;min-width:120px;padding:12px 20px;border-radius:12px;border:none;font-size:.9em;font-weight:600;cursor:pointer;text-align:center;transition:all .2s}
+        .btn-primary{background:linear-gradient(135deg,#ff6b35,#ff8c42);color:#fff}
+        .btn-outline{background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7)}
+        .hero-sub{font-size:.78em;color:rgba(255,255,255,.4);margin-top:12px}
+        /* Quick Stats */
+        .quick-stats{background:#1a1a2e;padding:16px 20px;display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.06);overflow-x:auto}
+        .qs-item{flex:1;min-width:90px;text-align:center;padding:10px 8px}
+        .qs-val{font-size:1.3em;font-weight:700;color:#fff}
+        .qs-label{font-size:.68em;color:rgba(255,255,255,.4);margin-top:3px}
+        .qs-trend{font-size:.65em;margin-top:2px}
+        /* Nav Grid */
+        .nav-section{padding:16px}
+        .nav-title{font-size:.85em;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:12px;padding-left:4px}
+        .nav-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+        .nav-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px 12px;text-align:center;cursor:pointer;transition:all .2s;text-decoration:none;display:block}
+        .nav-card:active{transform:scale(.97)}
+        .nav-icon{font-size:1.8em;margin-bottom:8px}
+        .nav-name{font-size:.85em;font-weight:600;color:#fff;margin-bottom:3px}
+        .nav-desc{font-size:.68em;color:rgba(255,255,255,.4);line-height:1.4}
+        .nav-badge{background:#ff6b35;color:#fff;font-size:.65em;padding:2px 7px;border-radius:8px;margin-top:6px;display:inline-block}
+        /* Today's Task Preview */
+        .task-preview{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin:0 16px 16px}
+        .tp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+        .tp-title{font-size:.95em;font-weight:600;color:#fff;display:flex;align-items:center;gap:6px}
+        .tp-count{background:rgba(255,107,53,.2);color:#ff8c42;font-size:.72em;padding:2px 8px;border-radius:8px}
+        .tp-more{font-size:.78em;color:rgba(255,255,255,.4)}
+        .tp-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+        .tp-item:last-child{border-bottom:none}
+        .tp-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+        .dot-urgent{background:#ff6b35}.dot-warn{background:#fbbf24}.dot-info{background:#4facfe}.dot-good{background:#4ade80}
+        .tp-content{flex:1}
+        .tp-task{font-size:.85em;color:#fff;font-weight:500;margin-bottom:2px}
+        .tp-meta{font-size:.72em;color:rgba(255,255,255,.4)}
+        .tp-action{font-size:.72em;color:#ff8c42;font-weight:600;flex-shrink:0}
+        /* Market */
+        .market-section{padding:0 16px 16px}
+        .market-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px}
+        .market-title{font-size:.95em;font-weight:600;color:#fff;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+        .market-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        .market-item{padding:12px;background:rgba(255,255,255,.03);border-radius:10px}
+        .market-name{font-size:.82em;color:rgba(255,255,255,.6);margin-bottom:4px}
+        .market-val{font-size:1.1em;font-weight:700}
+        .market-mine{color:#ff8c42}.market-comp{color:rgba(255,255,255,.5)}
+        .market-label{font-size:.68em;color:rgba(255,255,255,.4)}
+        .market-bar{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:6px}
+        .market-bar-fill{height:100%;border-radius:2px}
+        .bar-mine{background:linear-gradient(90deg,#ff6b35,#ff8c42)}.bar-comp{background:rgba(255,255,255,.2)}
+        /* Bottom Nav */
+        .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#1a1a2e;border-top:1px solid rgba(255,255,255,.08);display:flex;padding:8px 0;z-index:100}
+        .bn-item{flex:1;text-align:center;padding:6px 0;cursor:pointer;text-decoration:none;display:block}
+        .bn-icon{font-size:1.3em;margin-bottom:3px}
+        .bn-label{font-size:.65em;color:rgba(255,255,255,.4)}
+        .bn-item.active .bn-label{color:#ff8c42}
         /* Pricing */
-        .pricing { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; max-width: 900px; margin: 0 auto; }
-        .pc {
-            background: #fff; border-radius: 16px; padding: 40px 30px; text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06); position: relative; transition: transform 0.2s;
-        }
-        .pc:hover { transform: translateY(-5px); }
-        .pc.rec { border: 3px solid #ff6b35; transform: scale(1.05); }
-        .pc.rec:hover { transform: scale(1.05) translateY(-5px); }
-        .rec-badge {
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            background: #ff6b35; color: #fff; padding: 5px 20px; border-radius: 20px;
-            font-size: 0.85em; font-weight: 600;
-        }
-        .pc-name { font-size: 1.3em; font-weight: 600; margin-bottom: 10px; }
-        .pc-price { font-size: 2.5em; font-weight: 700; color: #ff6b35; margin-bottom: 5px; }
-        .pc-period { color: #999; margin-bottom: 25px; }
-        .pc-features { list-style: none; text-align: left; margin-bottom: 30px; }
-        .pc-features li { padding: 8px 0; border-bottom: 1px solid #f5f5f5; }
-        .pc-btn {
-            background: linear-gradient(135deg, #ff6b35, #ff8c42); color: #fff;
-            padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: 600;
-            display: inline-block; transition: transform 0.2s;
-        }
-        .pc-btn:hover { transform: scale(1.05); }
-
-        /* CTA */
-        .cta {
-            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4e 100%);
-            color: #fff; text-align: center; padding: 80px 20px;
-        }
-        .cta h2 { font-size: 2.2em; margin-bottom: 15px; }
-        .cta p { font-size: 1.1em; opacity: 0.8; margin-bottom: 40px; }
-
-        /* Footer */
-        footer {
-            background: #1a1a2e; color: rgba(255,255,255,0.6);
-            text-align: center; padding: 30px; font-size: 0.9em;
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2em; }
-            .nav-links { display: none; }
-            .section-title { font-size: 1.7em; }
-            .steps { flex-direction: column; align-items: center; }
+        .pricing-section{padding:0 16px 100px}
+        .pricing-title{font-size:.85em;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:12px;padding-left:4px}
+        .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+        .pricing-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;text-align:center}
+        .pricing-card.featured{background:linear-gradient(135deg,rgba(255,107,53,.1),rgba(255,140,66,.05));border-color:rgba(255,107,53,.3)}
+        .pricing-name{font-size:.82em;font-weight:600;color:#fff;margin-bottom:6px}
+        .pricing-price{font-size:1.3em;font-weight:700;color:#ff8c42;margin-bottom:2px}
+        .pricing-unit{font-size:.68em;color:rgba(255,255,255,.4)}
+        .pricing-feats{font-size:.72em;color:rgba(255,255,255,.5);line-height:1.6;margin-top:8px;text-align:left}
+        @media(min-width:768px){
+            .main{max-width:600px;margin:0 auto;padding-bottom:80px}
+            .hero{padding:50px 30px 40px}
+            .nav-grid{grid-template-columns:repeat(3,1fr);gap:14px}
+            .bottom-nav{max-width:632px;left:50%;transform:translateX(-50%)}
         }
     </style>
 </head>
 <body>
 
-<!-- Header -->
-<header>
-    <nav class="nav">
-        <div class="logo">🍱 外卖智囊</div>
-        <div class="nav-links">
-            <a href="#features">功能</a>
-            <a href="#how">使用流程</a>
-            <a href="#results">效果</a>
-            <a href="#pricing">价格</a>
-        </div>
-    </nav>
-</header>
+<div class="main">
 
 <!-- Hero -->
-<section class="hero">
-    <h1>🍱 外卖智囊</h1>
-    <p>AI 外卖销量提升助手</p>
-    <p class="hero-sub">接入美团/饿了么数据，AI 直接告诉您怎么提升单量</p>
-    <div class="hero-badges">
-        <span class="badge">📈 平均单量提升 35%</span>
-        <span class="badge">🏪 已服务 200+ 门店</span>
-        <span class="badge">⏱️ 7 天见效</span>
+<div class="hero">
+    <div class="hero-logo">🍱</div>
+    <h1>外卖智囊</h1>
+    <p>AI外卖销量提升助手 · 每天告诉你该做什么<br>自动追踪效果，让每一分投入都看得见</p>
+    <div class="hero-btns">
+        <a href="tasks.html" class="btn btn-primary" style="text-decoration:none">📋 今日任务</a>
+        <a href="dashboard.html" class="btn btn-outline" style="text-decoration:none">📊 数据看板</a>
     </div>
-    <div class="hero-buttons">
-        <a href="#demo" class="btn-white">🚀 免费诊断我的外卖店</a>
-        <a href="#features" class="btn-outline">📊 查看功能</a>
-    </div>
-</section>
+    <div class="hero-sub">已有 <strong style="color:#ff8c42">127</strong> 家餐厅正在使用 · 今日新增 <strong style="color:#ff8c42">8</strong></div>
+</div>
 
-<!-- Pain Points -->
-<div class="section">
-    <h2 class="section-title">外卖老板的 4 大痛点</h2>
-    <p class="section-sub">每一个都是真金白银的损失</p>
-    <div class="pains">
-        <div class="pain-card">
-            <div class="pain-icon">📉</div>
-            <h3>单量上不去</h3>
-            <p>每天只有几十单，隔壁同类店铺却有三四百单。不知道是菜单问题、价格问题还是活动问题，盲目调整反而越做越差。</p>
-        </div>
-        <div class="pain-card">
-            <div class="pain-icon">💸</div>
-            <h3>推广费打水漂</h3>
-            <p>每月花几千块买推广，转化率却很低。不知道哪些菜品值得推、什么时间段推广ROI最高，钱花了却没效果。</p>
-        </div>
-        <div class="pain-card">
-            <div class="pain-icon">😤</div>
-            <h3>差评处理不及时</h3>
-            <p>一条差评影响后续 30+ 单的转化。等您发现时已经过去好几天，评分掉了再拉回来要花几倍精力。</p>
-        </div>
-        <div class="pain-card">
-            <div class="pain-icon">🤷</div>
-            <h3>不知道竞品在干嘛</h3>
-            <p>竞品突然单量暴涨，您完全不知道原因。是上了新菜？调了价格？还是做了什么活动？信息差让您一直落后。</p>
-        </div>
+<!-- Quick Stats -->
+<div class="quick-stats">
+    <div class="qs-item"><div class="qs-val">87</div><div class="qs-label">今日订单</div><div class="qs-trend up">↑23%</div></div>
+    <div class="qs-item"><div class="qs-val">¥2,847</div><div class="qs-label">今日营收</div><div class="qs-trend up">↑18%</div></div>
+    <div class="qs-item"><div class="qs-val">4.6⭐</div><div class="qs-label">店铺评分</div><div class="qs-trend down">↓0.1</div></div>
+    <div class="qs-item"><div class="qs-val">3</div><div class="qs-label">待处理任务</div><div class="qs-trend" style="color:#ff8c42">🔥</div></div>
+</div>
+
+<!-- Today's Task Preview -->
+<div class="task-preview">
+    <div class="tp-header">
+        <div class="tp-title">🔥 今日待办 <span class="tp-count">3</span></div>
+        <a href="tasks.html" class="tp-more" style="color:#ff8c42;text-decoration:none">查看全部 →</a>
+    </div>
+    <div class="tp-item">
+        <div class="tp-dot dot-urgent"></div>
+        <div class="tp-content"><div class="tp-task">黄焖鸡套餐B调价（点击率仅3.2%）</div><div class="tp-meta">预计日增12-18单 · 紧急</div></div>
+        <div class="tp-action">执行</div>
+    </div>
+    <div class="tp-item">
+        <div class="tp-dot dot-warn"></div>
+        <div class="tp-content"><div class="tp-task">采购补货：鸡腿肉50份</div><div class="tp-meta">明天14:00前售罄</div></div>
+        <div class="tp-action">查看</div>
+    </div>
+    <div class="tp-item">
+        <div class="tp-dot dot-info"></div>
+        <div class="tp-content"><div class="tp-task">回复3条差评（配送慢）</div><div class="tp-meta">AI已生成回复话术</div></div>
+        <div class="tp-action">回复</div>
     </div>
 </div>
 
-<!-- Features -->
-<div class="section" id="features" style="background: #fff;">
-    <h2 class="section-title">六大 AI 核心功能</h2>
-    <p class="section-sub">专为外卖场景设计，不是通用数据分析工具</p>
-    <div class="features">
-        <div class="feature-card">
-            <div class="fh c1">🍜 菜单优化引擎</div>
-            <div class="fb">
-                <ul>
-                    <li><span class="li-ok">✅</span> 分析每道菜的点击率/转化率</li>
-                    <li><span class="li-ok">✅</span> 对比竞品菜单结构（菜品数/价格带/套餐）</li>
-                    <li><span class="li-ok">✅</span> AI 建议：主推/下架/改进菜品</li>
-                    <li><span class="li-ok">✅</span> 套餐组合优化建议</li>
-                </ul>
-            </div>
-        </div>
-        <div class="feature-card">
-            <div class="fh c2">🎯 竞品对标分析</div>
-            <div class="fb">
-                <ul>
-                    <li><span class="li-ok">✅</span> 自动监控周边 3km 竞品外卖店</li>
-                    <li><span class="li-ok">✅</span> 单量估算 + 价格对比 + 活动对比</li>
-                    <li><span class="li-ok">✅</span> 竞品突然单量暴涨 → 原因推送</li>
-                    <li><span class="li-ok">✅</span> 每周竞品动态报告</li>
-                </ul>
-            </div>
-        </div>
-        <div class="feature-card">
-            <div class="fh c3">💰 定价策略助手</div>
-            <div class="fb">
-                <ul>
-                    <li><span class="li-ok">✅</span> 基于竞品价格 + 成本 + 平台扣点</li>
-                    <li><span class="li-ok">✅</span> 给出最优定价区间建议</li>
-                    <li><span class="li-ok">✅</span> 动态调价建议（高峰/淡季）</li>
-                    <li><span class="li-ok">✅</span> 满减门槛优化计算</li>
-                </ul>
-            </div>
-        </div>
-        <div class="feature-card">
-            <div class="fh c4">🎁 促销活动管理</div>
-            <div class="fb">
-                <ul>
-                    <li><span class="li-ok">✅</span> 分析哪种活动 ROI 最高</li>
-                    <li><span class="li-ok">✅</span> 自动生成活动方案</li>
-                    <li><span class="li-ok">✅</span> 追踪活动效果，及时止损/加码</li>
-                    <li><span class="li-ok">✅</span> 平台活动报名提醒</li>
-                </ul>
-            </div>
-        </div>
-        <div class="feature-card">
-            <div class="fh c5">💬 评价管理 AI</div>
-            <div class="fb">
-                <ul>
-                    <li><span class="li-ok">✅</span> 实时抓取并分析差评原因</li>
-                    <li><span class="li-ok">✅</span> AI 自动生成回复话术</li>
-                    <li><span class="li-ok">✅</span> 预警：某道菜差评集中</li>
-                    <li><span class="li-ok">✅</span> 好评关键词提取，强化优势</li>
-                </ul>
-            </div>
-        </div>
-        <div class="feature-card">
-            <div class="fh c6">📅 单量预测与备货</div>
-            <div class="fb">
-                <ul>
-                    <li><span class="li-ok">✅</span> 基于历史数据 + 天气 + 节假日预测单量</li>
-                    <li><span class="li-ok">✅</span> 提前建议备货量和人员安排</li>
-                    <li><span class="li-ok">✅</span> 异常单量预警（突然暴跌提醒）</li>
-                    <li><span class="li-ok">✅</span> 骑手接单率分析，优化出餐速度</li>
-                </ul>
-            </div>
-        </div>
+<!-- Nav Grid -->
+<div class="nav-section">
+    <div class="nav-title">功能模块</div>
+    <div class="nav-grid">
+        <a href="tasks.html" class="nav-card">
+            <div class="nav-icon">📋</div>
+            <div class="nav-name">今日任务</div>
+            <div class="nav-desc">AI每日行动清单</div>
+            <div class="nav-badge">3待办</div>
+        </a>
+        <a href="dashboard.html" class="nav-card">
+            <div class="nav-icon">📊</div>
+            <div class="nav-name">数据看板</div>
+            <div class="nav-desc">经营数据总览</div>
+        </a>
+        <a href="menu.html" class="nav-card">
+            <div class="nav-icon">🍜</div>
+            <div class="nav-name">菜单优化</div>
+            <div class="nav-desc">菜品表现分析</div>
+            <div class="nav-badge" style="background:#fbbf24">5待改</div>
+        </a>
+        <a href="#" class="nav-card">
+            <div class="nav-icon">🎯</div>
+            <div class="nav-name">竞品对标</div>
+            <div class="nav-desc">周边竞品监控</div>
+        </a>
+        <a href="#" class="nav-card">
+            <div class="nav-icon">💰</div>
+            <div class="nav-name">定价策略</div>
+            <div class="nav-desc">智能动态定价</div>
+        </a>
+        <a href="#" class="nav-card">
+            <div class="nav-icon">💬</div>
+            <div class="nav-name">评价管理</div>
+            <div class="nav-desc">AI回复差评</div>
+        </a>
+        <a href="#" class="nav-card">
+            <div class="nav-icon">🎁</div>
+            <div class="nav-name">活动管理</div>
+            <div class="nav-desc">促销ROI分析</div>
+        </a>
+        <a href="#" class="nav-card">
+            <div class="nav-icon">📅</div>
+            <div class="nav-name">单量预测</div>
+            <div class="nav-desc">智能备货建议</div>
+        </a>
+        <a href="#" class="nav-card">
+            <div class="nav-icon">📦</div>
+            <div class="nav-name">库存管理</div>
+            <div class="nav-desc">食材预警采购</div>
+        </a>
     </div>
 </div>
 
-<!-- Dashboard Preview -->
-<div class="section" id="demo">
-    <h2 class="section-title">AI 数据看板预览</h2>
-    <p class="section-sub">不只是数据图表，直接给出可执行的行动建议</p>
-    <div class="dash-preview">
-        <div class="dp-title">📊 今日数据概览 — 示例店铺「XX黄焖鸡米饭」</div>
-        <div class="dp-grid">
-            <div class="dp-card">
-                <div class="dp-label">今日订单</div>
-                <div class="dp-value">87 单</div>
-                <div class="dp-trend t-up">↑ 23% vs 昨日</div>
+<!-- Competitor -->
+<div class="market-section">
+    <div class="market-title">🎯 今日竞品对比</div>
+    <div class="market-card">
+        <div class="market-grid">
+            <div class="market-item">
+                <div class="market-name">我的店铺</div>
+                <div class="market-val market-mine">78单/天</div>
+                <div class="market-label">日均</div>
+                <div class="market-bar"><div class="market-bar-fill bar-mine" style="width:71%"></div></div>
             </div>
-            <div class="dp-card">
-                <div class="dp-label">竞品平均单量</div>
-                <div class="dp-value">62 单</div>
-                <div class="dp-trend t-up">您领先 40%</div>
+            <div class="market-item">
+                <div class="market-name">张记黄焖鸡</div>
+                <div class="market-val market-comp">92单/天</div>
+                <div class="market-label">满减活动中 ↑18%</div>
+                <div class="market-bar"><div class="market-bar-fill bar-comp" style="width:84%"></div></div>
             </div>
-            <div class="dp-card">
-                <div class="dp-label">好评率</div>
-                <div class="dp-value">94.2%</div>
-                <div class="dp-trend t-down">↓ 1.2% vs 上周</div>
+            <div class="market-item">
+                <div class="market-name">老王快餐</div>
+                <div class="market-val market-comp">65单/天</div>
+                <div class="market-label">日均 ↓5%</div>
+                <div class="market-bar"><div class="market-bar-fill bar-comp" style="width:59%"></div></div>
             </div>
-            <div class="dp-card">
-                <div class="dp-label">推广 ROI</div>
-                <div class="dp-value">1 : 3.8</div>
-                <div class="dp-trend t-warn">⚠️ 低于目标 1:5</div>
+            <div class="market-item">
+                <div class="market-name">味千拉面</div>
+                <div class="market-val market-comp">110单/天</div>
+                <div class="market-label">日均 稳定</div>
+                <div class="market-bar"><div class="market-bar-fill bar-comp" style="width:100%"></div></div>
             </div>
-        </div>
-        <div class="ai-box">
-            <h4>🤖 AI 今日行动建议</h4>
-            <ul>
-                <li><span class="ai-icon">🔥</span> <strong>菜单优化：</strong>"黄焖鸡套餐B"点击率仅 3.2%（同类平均 8.5%），建议更换主图或调整价格，预计可提升单量 12-18 单/天</li>
-                <li><span class="ai-icon">⚠️</span> <strong>评价预警：</strong>近 3 天"配送慢"相关差评占比上升至 38%，建议联系骑手站点或调整出餐流程，评分有持续下跌风险</li>
-                <li><span class="ai-icon">🎯</span> <strong>竞品动态：</strong>周边「张记黄焖鸡」昨日上线"满30减12"活动，单量从 45 涨到 78，建议您考虑跟进或差异化应对</li>
-                <li><span class="ai-icon">💰</span> <strong>推广优化：</strong>当前推广在 14:00-16:00 投放 ROI 仅 1:1.8，建议将该时段预算转移至 11:00-12:00（ROI 1:5.2），预计节省推广费 ¥420/天</li>
-                <li><span class="ai-icon">📅</span> <strong>明日预测：</strong>明日有雨，预计单量上涨 25-30%，建议提前备货增加 30%，并多安排 1 名备餐人员</li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<!-- How it works -->
-<div class="section" id="how" style="background: #fff;">
-    <h2 class="section-title">3 步开始使用</h2>
-    <p class="section-sub">无需技术背景，餐饮老板也能轻松上手</p>
-    <div class="steps">
-        <div class="step">
-            <div class="step-num">1</div>
-            <h3>绑定外卖账号</h3>
-            <p>授权接入美团/饿了么商家后台，自动同步订单、菜单、评价数据（数据安全加密，不存储敏感信息）</p>
-        </div>
-        <div class="step">
-            <div class="step-num">2</div>
-            <h3>AI 自动分析</h3>
-            <p>系统自动分析您的店铺数据 + 竞品数据，24 小时内生成第一份诊断报告</p>
-        </div>
-        <div class="step">
-            <div class="step-num">3</div>
-            <h3>执行建议，看单量增长</h3>
-            <p>按照 AI 给出的建议操作，持续追踪效果，系统会动态优化策略</p>
-        </div>
-    </div>
-</div>
-
-<!-- Results -->
-<div class="section">
-    <h2 class="section-title">真实效果数据</h2>
-    <p class="section-sub">来自已使用商家的真实反馈</p>
-    <div class="results">
-        <div class="result-card">
-            <div class="result-icon">📈</div>
-            <div class="result-val">+42%</div>
-            <div class="result-label">平均单量提升</div>
-        </div>
-        <div class="result-card">
-            <div class="result-icon">💰</div>
-            <div class="result-val">¥3,800</div>
-            <div class="result-label">平均每月节省推广费</div>
-        </div>
-        <div class="result-card">
-            <div class="result-icon">⭐</div>
-            <div class="result-val">+0.3</div>
-            <div class="result-label">平均评分提升</div>
-        </div>
-        <div class="result-card">
-            <div class="result-icon">⏱️</div>
-            <div class="result-val">7 天</div>
-            <div class="result-label">平均见效时间</div>
         </div>
     </div>
 </div>
 
 <!-- Pricing -->
-<div class="section" id="pricing" style="background: #fff;">
-    <h2 class="section-title">简单透明的价格</h2>
-    <p class="section-sub">14 天免费试用，无需信用卡，单量提升后再付费</p>
-    <div class="pricing">
-        <div class="pc">
-            <div class="pc-name">基础版</div>
-            <div class="pc-price">¥199</div>
-            <div class="pc-period">/月（年付 ¥1,990）</div>
-            <ul class="pc-features">
-                <li>✅ 1 个外卖店铺</li>
-                <li>✅ 菜单优化建议</li>
-                <li>✅ 竞品动态监控</li>
-                <li>✅ 基础评价分析</li>
-                <li>❌ 推广 ROI 优化</li>
-                <li>❌ AI 自动回复</li>
-            </ul>
-            <a href="#" class="pc-btn">免费试用</a>
+<div class="pricing-section">
+    <div class="pricing-title">选择适合您的方案</div>
+    <div class="pricing-grid">
+        <div class="pricing-card">
+            <div class="pricing-name">基础版</div>
+            <div class="pricing-price">¥199</div>
+            <div class="pricing-unit">/月</div>
+            <div class="pricing-feats">
+                · 今日任务清单<br>
+                · 数据看板<br>
+                · 菜单优化<br>
+                · AI建议<br>
+            </div>
         </div>
-        <div class="pc rec">
-            <div class="rec-badge">🏆 最受欢迎</div>
-            <div class="pc-name">专业版</div>
-            <div class="pc-price">¥499</div>
-            <div class="pc-period">/月（年付 ¥4,990）</div>
-            <ul class="pc-features">
-                <li>✅ 3 个外卖店铺</li>
-                <li>✅ 全部 AI 分析功能</li>
-                <li>✅ 推广 ROI 优化</li>
-                <li>✅ AI 评价自动回复</li>
-                <li>✅ 单量预测与备货建议</li>
-                <li>✅ 微信预警推送</li>
-            </ul>
-            <a href="#" class="pc-btn">立即试用</a>
+        <div class="pricing-card featured">
+            <div class="pricing-name" style="color:#ff8c42">专业版</div>
+            <div class="pricing-price">¥499</div>
+            <div class="pricing-unit">/月</div>
+            <div class="pricing-feats">
+                · 全部基础功能<br>
+                · 竞品监控<br>
+                · AI一键执行<br>
+                · 语音播报<br>
+            </div>
         </div>
-        <div class="pc">
-            <div class="pc-name">连锁版</div>
-            <div class="pc-price">¥1,499</div>
-            <div class="pc-period">/月（年付 ¥14,990）</div>
-            <ul class="pc-features">
-                <li>✅ 10 个外卖店铺</li>
-                <li>✅ 专业版全部功能</li>
-                <li>✅ 多店铺数据对比</li>
-                <li>✅ 定制 AI 报告</li>
-                <li>✅ API 对接 ERP/POS</li>
-                <li>✅ 专属客户成功经理</li>
-            </ul>
-            <a href="#" class="pc-btn">联系销售</a>
+        <div class="pricing-card">
+            <div class="pricing-name">连锁版</div>
+            <div class="pricing-price">¥1,499</div>
+            <div class="pricing-unit">/月</div>
+            <div class="pricing-feats">
+                · 全部专业功能<br>
+                · 多店管理<br>
+                · API接入<br>
+                · 专属客服<br>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- CTA -->
-<section class="cta">
-    <h2>准备好提升外卖单量了吗？</h2>
-    <p>免费诊断您的外卖店铺，5 分钟获取 AI 优化建议</p>
-    <a href="#" class="btn-white" style="color: #ff6b35;">🚀 立即免费诊断</a>
-</section>
+</div>
 
-<!-- Footer -->
-<footer>
-    <p>© 2026 外卖智囊 Waimai Zhinang — AI 外卖销量提升助手</p>
-    <p style="margin-top: 10px;">产品原型演示页 | 联系：demo@waimaizhinang.com</p>
-</footer>
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+    <a href="index.html" class="bn-item active">
+        <div class="bn-icon">🏠</div>
+        <div class="bn-label">首页</div>
+    </a>
+    <a href="tasks.html" class="bn-item">
+        <div class="bn-icon">📋</div>
+        <div class="bn-label">任务</div>
+    </a>
+    <a href="dashboard.html" class="bn-item">
+        <div class="bn-icon">📊</div>
+        <div class="bn-label">看板</div>
+    </a>
+    <a href="menu.html" class="bn-item">
+        <div class="bn-icon">🍜</div>
+        <div class="bn-label">菜单</div>
+    </a>
+    <a href="#" class="bn-item">
+        <div class="bn-icon">⚙️</div>
+        <div class="bn-label">设置</div>
+    </a>
+</div>
+
+<style>
+.up{color:#4ade80}.down{color:#ff6b6b}
+</style>
 
 </body>
 </html>

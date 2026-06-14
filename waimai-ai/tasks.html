@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>外卖智囊 — AI每日行动清单</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#0f0f1a;color:#e0e0e0}
+        .topbar{position:sticky;top:0;z-index:100;background:#1a1a2e;border-bottom:1px solid rgba(255,255,255,.08);padding:16px}
+        .topbar-date{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+        .date-text{font-size:.9em;color:rgba(255,255,255,.7)}
+        .forecast{font-size:.82em;padding:4px 12px;border-radius:12px;background:rgba(74,172,254,.15);color:#4facfe}
+        .topbar-stats{display:flex;gap:12px;flex-wrap:wrap}
+        .stat-item{flex:1;min-width:80px;background:rgba(255,255,255,.04);border-radius:10px;padding:10px 12px}
+        .stat-label{font-size:.72em;color:rgba(255,255,255,.5);margin-bottom:2px}
+        .stat-value{font-size:1.1em;font-weight:700;color:#fff}
+        .stat-trend{font-size:.7em;margin-top:2px}
+        .up{color:#4ade80}.down{color:#ff6b6b}
+        .tabs{display:flex;gap:0;background:rgba(255,255,255,.04);border-radius:12px;padding:4px;margin:14px 16px 0}
+        .tab{flex:1;text-align:center;padding:10px 0;font-size:.88em;border-radius:10px;cursor:pointer;color:rgba(255,255,255,.5);transition:all .2s}
+        .tab.active{background:linear-gradient(135deg,#ff6b35,#ff8c42);color:#fff;font-weight:600}
+        .main{padding:16px 16px 80px}
+        .section-title{font-size:.85em;font-weight:600;color:rgba(255,255,255,.6);margin:18px 0 10px;display:flex;align-items:center;gap:6px}
+        .section-count{background:rgba(255,107,53,.2);color:#ff8c42;font-size:.72em;padding:2px 8px;border-radius:8px}
+        .task-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin-bottom:12px;border-left:4px solid;transition:transform .2s}
+        .task-card:hover{transform:translateY(-1px)}
+        .urgent{border-left-color:#ff6b35}.warn{border-left-color:#fbbf24}.info{border-left-color:#4facfe}.good{border-left-color:#4ade80}.done{border-left-color:rgba(255,255,255,.1);opacity:.6}
+        .task-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+        .task-tag{font-size:.72em;padding:3px 10px;border-radius:8px;display:inline-flex;align-items:center;gap:4px}
+        .task-tag.urgent{background:rgba(255,107,53,.2);color:#ff8c42}.task-tag.warn{background:rgba(251,191,36,.2);color:#fbbf24}.task-tag.info{background:rgba(79,172,254,.2);color:#4facfe}.task-tag.good{background:rgba(74,222,128,.2);color:#4ade80}
+        .task-time{font-size:.72em;color:rgba(255,255,255,.3)}
+        .task-title{font-size:.95em;font-weight:600;color:#fff;margin-bottom:6px;line-height:1.5}
+        .task-desc{font-size:.82em;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:10px}
+        .task-effect{background:rgba(74,222,128,.08);border-radius:8px;padding:8px 12px;font-size:.78em;color:#4ade80;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+        .task-actions{display:flex;gap:8px;flex-wrap:wrap}
+        .btn{flex:1;min-width:80px;padding:9px 14px;border-radius:10px;border:none;font-size:.85em;font-weight:600;cursor:pointer;transition:all .2s;text-align:center}
+        .btn-primary{background:linear-gradient(135deg,#ff6b35,#ff8c42);color:#fff}.btn-primary:active{transform:scale(.97)}
+        .btn-secondary{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7)}
+        .btn-danger{background:rgba(255,107,107,.15);color:#ff6b6b}
+        .task-result{background:rgba(255,255,255,.03);border-radius:8px;padding:10px 12px;margin-top:10px;font-size:.78em;color:rgba(255,255,255,.6);line-height:1.6}
+        .task-result strong{color:#4ade80}
+        .voice-bar{position:fixed;bottom:0;left:0;right:0;background:#1a1a2e;border-top:1px solid rgba(255,255,255,.08);padding:12px 16px;display:flex;align-items:center;gap:12px;z-index:100}
+        .voice-btn{width:48px;height:48px;border-radius:50%;border:none;background:linear-gradient(135deg,#ff6b35,#ff8c42);color:#fff;font-size:1.3em;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s}
+        .voice-btn:active{transform:scale(.92)}
+        .voice-btn.listening{animation:pulse 1.5s infinite}
+        @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,53,.4)}50%{box-shadow:0 0 0 12px rgba(255,107,53,0)}}
+        .voice-text{flex:1;background:rgba(255,255,255,.06);border-radius:12px;padding:10px 14px;font-size:.88em;color:rgba(255,255,255,.5)}
+        .voice-text.has-text{color:#fff}
+        .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:20px}
+        .modal-overlay.show{display:flex}
+        .modal{background:#1a1a2e;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:24px;width:100%;max-width:380px}
+        .modal h3{color:#fff;margin-bottom:12px;font-size:1.1em}
+        .modal p{font-size:.9em;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:16px;white-space:pre-line}
+        .modal-actions{display:flex;gap:10px}.modal-actions .btn{flex:1}
+        .tab-content{display:none}.tab-content.active{display:block}
+        .done-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(74,222,128,.2);color:#4ade80;font-size:.72em;padding:3px 10px;border-radius:8px;margin-bottom:6px}
+        @media(min-width:768px){.main{max-width:600px;margin:0 auto}.voice-bar{max-width:632px;left:50%;transform:translateX(-50%)}}
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-date">
+        <div class="date-text">📅 6月15日 周日 · 明天预计单量 <strong style="color:#ff8c42">95单</strong></div>
+        <div class="forecast">🌤️ 晴 适合推夏季新品</div>
+    </div>
+    <div class="topbar-stats">
+        <div class="stat-item"><div class="stat-label">昨日单量</div><div class="stat-value">87</div><div class="stat-trend up">↑ 23%</div></div>
+        <div class="stat-item"><div class="stat-label">昨日营收</div><div class="stat-value">¥2,847</div><div class="stat-trend up">↑ 18%</div></div>
+        <div class="stat-item"><div class="stat-label">店铺评分</div><div class="stat-value">4.6</div><div class="stat-trend down">↓ 0.1</div></div>
+    </div>
+</div>
+
+<div class="tabs">
+    <div class="tab active" onclick="switchTab('today')">今日任务 <span style="font-size:.8em;color:#ff8c42">3</span></div>
+    <div class="tab" onclick="switchTab('tracking')">执行追踪</div>
+    <div class="tab" onclick="switchTab('history')">已完成</div>
+</div>
+
+<div class="main">
+
+<div class="tab-content active" id="tab-today">
+    <div class="section-title">🔥 今日必做 <span class="section-count">3项</span></div>
+
+    <div class="task-card urgent" id="task1">
+        <div class="task-header"><span class="task-tag urgent">🔥 紧急优化</span><span class="task-time">建议14:00前完成</span></div>
+        <div class="task-title">黄焖鸡套餐B 点击率过低，建议立即调价</div>
+        <div class="task-desc">当前点击率仅 <strong style="color:#ff6b6b">3.2%</strong>（同类平均8.5%）。分析发现价格偏高（¥29.9），建议调至 <strong style="color:#ff8c42">¥25.9</strong>。</div>
+        <div class="task-effect">✅ 预期效果：日增12-18单，增收¥350-520/天</div>
+        <div class="task-actions">
+            <button class="btn btn-primary" onclick="executeTask(1)">⚡ 立即执行</button>
+            <button class="btn btn-secondary" onclick="delayTask(1)">⏰ 稍后</button>
+            <button class="btn btn-danger" onclick="rejectTask(1)">❌ 不考虑</button>
+        </div>
+    </div>
+
+    <div class="task-card warn" id="task2">
+        <div class="task-header"><span class="task-tag warn">📦 采购提醒</span><span class="task-time">今天18:00前完成</span></div>
+        <div class="task-title">鸡腿肉剩余23份，明天预计不够，建议补货</div>
+        <div class="task-desc">根据明日单量预测（95单），鸡腿肉剩余 <strong style="color:#fbbf24">23份</strong>，预计明天14:00前售罄。建议今天补货 <strong style="color:#4ade80">50份</strong>。</div>
+        <div class="task-effect">✅ 自动生成采购清单：鸡腿肉50份、米饭100斤、土豆30斤</div>
+        <div class="task-actions">
+            <button class="btn btn-primary" onclick="executeTask(2)">📋 查看采购清单</button>
+            <button class="btn btn-secondary" onclick="delayTask(2)">⏰ 提醒我</button>
+        </div>
+    </div>
+
+    <div class="task-card info" id="task3">
+        <div class="task-header"><span class="task-tag info">💬 评价待处理</span><span class="task-time">3条差评未回复</span></div>
+        <div class="task-title">近3天"配送慢"差评占38%，建议统一回复+优化</div>
+        <div class="task-desc">最新差评：「配送等了快1小时，饭都凉了」（6/14 11:23）。AI已生成3套回复话术，建议选择一套立即回复。</div>
+        <div class="task-effect">✅ 及时回复可挽回30%差评顾客，评分预计回升至4.7</div>
+        <div class="task-actions">
+            <button class="btn btn-primary" onclick="executeTask(3)">🤖 AI一键回复</button>
+            <button class="btn btn-secondary" onclick="delayTask(3)">✍️ 手动回复</button>
+        </div>
+    </div>
+
+    <div class="section-title">💡 可选优化 <span class="section-count">2项</span></div>
+
+    <div class="task-card good" id="task4">
+        <div class="task-header"><span class="task-tag good">💰 推广优化</span><span class="task-time">14:00-16:00执行</span></div>
+        <div class="task-title">14:00-16:00推广ROI仅1:1.8，建议调整预算分配</div>
+        <div class="task-desc">该时段推广花费¥86，仅带来5单。建议将预算转至明日11:00-12:00（ROI 1:5.2），预计日省¥420。</div>
+        <div class="task-effect">✅ 预期效果：节省推广费¥420/天，ROI提升至1:4.5</div>
+        <div class="task-actions">
+            <button class="btn btn-primary" onclick="executeTask(4)">⚡ 立即调整</button>
+            <button class="btn btn-secondary" onclick="delayTask(4)">⏰ 明天做</button>
+        </div>
+    </div>
+
+    <div class="task-card warn" id="task5">
+        <div class="task-header"><span class="task-tag warn">🎯 竞品动态</span><span class="task-time">建议今明两天内应对</span></div>
+        <div class="task-title">周边「张记黄焖鸡」上线满30减12，单量涨73%</div>
+        <div class="task-desc">竞品「张记黄焖鸡」于6/13上线满30减12活动，单量从53涨到92。建议跟进推出「满35减10」或差异化应对。</div>
+        <div class="task-effect">✅ AI已生成3套应对方案，预计可挽回单量损失</div>
+        <div class="task-actions">
+            <button class="btn btn-primary" onclick="executeTask(5)">📊 查看应对方案</button>
+            <button class="btn btn-secondary" onclick="delayTask(5)">⏰ 稍后</button>
+        </div>
+    </div>
+</div>
+
+<div class="tab-content" id="tab-tracking">
+    <div class="section-title">📈 今日执行追踪</div>
+    <div class="task-card done">
+        <div class="task-header"><span class="done-tag">✅ 已完成 · 6/14 14:30</span></div>
+        <div class="task-title">黄焖鸡套餐B 调价至¥25.9</div>
+        <div class="task-result"><strong>效果追踪（执行后4小时）：</strong><br>• 点击率：3.2% → <strong>7.8% ↑143%</strong><br>• 新增订单：+16单<br>• 额外营收：+¥414</div>
+    </div>
+    <div class="task-card done">
+        <div class="task-header"><span class="done-tag">✅ 已完成 · 6/14 09:15</span></div>
+        <div class="task-title">AI一键回复3条差评</div>
+        <div class="task-result"><strong>执行结果：</strong><br>• 已回复3条差评，顾客满意度回升<br>• 其中1位顾客已修改为4星评价</div>
+    </div>
+</div>
+
+<div class="tab-content" id="tab-history">
+    <div class="section-title">📅 近7天完成记录</div>
+    <div class="task-card done" style="border-left-color:rgba(255,255,255,.1)">
+        <div class="task-header"><span class="done-tag">✅ 6/13</span></div>
+        <div class="task-title">推出"满30减8"活动</div>
+        <div class="task-result">执行后单量+22单，ROI 1:4.2，活动持续进行中</div>
+    </div>
+    <div class="task-card done" style="border-left-color:rgba(255,255,255,.1)">
+        <div class="task-header"><span class="done-tag">✅ 6/12</span></div>
+        <div class="task-title">优化黄焖鸡主图（更换为实拍图）</div>
+        <div class="task-result">点击率从9.8%提升至12.3%，持续有效</div>
+    </div>
+    <div class="task-card done" style="border-left-color:rgba(255,255,255,.1)">
+        <div class="task-header"><span class="done-tag">✅ 6/11</span></div>
+        <div class="task-title">采购备货：鸡腿肉80份</div>
+        <div class="task-result">备货充足，6/12-6/14无断货情况</div>
+    </div>
+</div>
+
+</div>
+
+<div class="voice-bar">
+    <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">🎤</button>
+    <div class="voice-text" id="voiceText">按住说话，问我"今天该做什么"</div>
+</div>
+
+<div class="modal-overlay" id="modal">
+    <div class="modal">
+        <h3 id="modalTitle">确认执行</h3>
+        <p id="modalDesc"></p>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+            <button class="btn btn-primary" onclick="confirmExecute()">确认执行</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let pendingTask=null;
+const T={1:{t:'黄焖鸡套餐B 调价至¥25.9',d:'确认将"黄焖鸡套餐B"从¥29.9调整为¥25.9？\n\n• 美团预计10分钟生效\n• 饿了么需手动确认'},2:{t:'查看今日采购清单',d:'已生成采购清单：\n• 鸡腿肉 50份\n• 米饭 100斤\n• 土豆 30斤\n\n可一键分享给供应商。'},3:{t:'AI一键回复差评',d:'AI将用友好话术回复3条差评：\n1. "非常抱歉，配送超时..."\n2. "感谢反馈，已加大鸡肉份量..."\n3. "抱歉汤洒了，已升级防漏包装..."\n\n确认执行？'},4:{t:'调整推广预算',d:'确认将14:00-16:00预算（¥86）转至明日11:00-12:00？\n\n预计日省¥420，ROI提升至1:4.5。'},5:{t:'查看竞品应对方案',d:'AI生成3套应对方案：\n1. 跟进满35减10（预计+15单/天）\n2. 买套餐送饮料（成本¥2.5/份）\n3. 加大非高峰推广\n\n确认查看详情？'}};
+function switchTab(tab){document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['today','tracking','history'][i]===tab)});document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active')}
+function executeTask(id){pendingTask=id;document.getElementById('modalTitle').textContent=T[id].t;document.getElementById('modalDesc').textContent=T[id].d;document.getElementById('modal').classList.add('show')}
+function confirmExecute(){closeModal();const c=document.getElementById('task'+pendingTask);if(c){c.style.opacity='.6';c.querySelector('.task-actions').innerHTML='<span style="color:#4ade80;font-size:.9em">✅ 已执行，正在追踪效果...</span>';setTimeout(()=>{alert('✅ 执行成功！可在"执行追踪"查看效果。');document.querySelectorAll('.tab')[1].click()},500)}}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function delayTask(id){alert('⏰ 已设置为明天09:00提醒');document.getElementById('task'+id).style.opacity='.5'}
+function rejectTask(id){if(confirm('确定不考虑这个建议吗？'))document.getElementById('task'+id).remove()}
+let listening=false;
+function toggleVoice(){listening=!listening;const b=document.getElementById('voiceBtn'),t=document.getElementById('voiceText');if(listening){b.classList.add('listening');t.textContent='正在听...';t.classList.add('has-text');setTimeout(()=>{t.textContent='今天有3件必做事：\n1.黄焖鸡套餐B调价\n2.采购补货50份\n3.回复3条差评\n要我帮你执行哪件？';setTimeout(()=>{listening=false;b.classList.remove('listening')},4000)},2000)}else{b.classList.remove('listening');t.textContent='按住说话，问我"今天该做什么"';t.classList.remove('has-text')}}
+</script>
+
+</body>
+</html>
