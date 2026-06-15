@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>光影相册</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            font-family: 'Noto Serif SC', serif;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        /* Header */
+        .header {
+            padding: 40px 20px 20px;
+            text-align: center;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0a0a0a 100%);
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 4px;
+        }
+        .header p {
+            font-size: 13px;
+            color: #888;
+            margin-top: 8px;
+            letter-spacing: 2px;
+        }
+
+        /* Photo Wall - Pinterest-style masonry */
+        .wall {
+            column-count: 2;
+            column-gap: 8px;
+            padding: 8px;
+            max-width: 768px;
+            margin: 0 auto;
+        }
+
+        .card {
+            break-inside: avoid;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            background: #1a1a1a;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .card:active {
+            transform: scale(0.97);
+        }
+
+        .card img {
+            width: 100%;
+            display: block;
+            transition: transform 0.5s ease, filter 0.5s ease;
+        }
+        .card:hover img {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        /* Floating info overlay */
+        .card .info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px 14px 14px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .card:hover .info,
+        .card.show .info {
+            opacity: 1;
+        }
+        .card .info span {
+            display: block;
+            font-size: 12px;
+            color: #ddd;
+        }
+        .card .info .name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.95);
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox.active {
+            display: flex;
+        }
+        .lightbox img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        .lightbox .close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #fff;
+            cursor: pointer;
+        }
+        .lightbox .close:active {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Loading shimmer */
+        .card .shimmer {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #555;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+        .footer a {
+            color: #888;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>✦ 光影相册 ✦</h1>
+    <p>每一次定格，都是永恒</p>
+</div>
+
+<div class="wall" id="wall"></div>
+
+<div class="footer">
+    Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> via Lorem Picsum
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
+    <span class="close">&times;</span>
+    <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+    // Define photo seeds — each seed produces a consistent random image
+    const seeds = [
+        // Portrait / fashion seeds
+        { seed: 'elegance', h: 500, name: '晨光微醺', author: 'Elena' },
+        { seed: 'twilight', h: 620, name: '暮色温柔', author: 'Sophia' },
+        { seed: 'bloom', h: 440, name: '花间漫步', author: 'Isabella' },
+        { seed: 'serenity', h: 560, name: '静水深流', author: 'Mia' },
+        { seed: 'golden', h: 480, name: '金色年华', author: 'Olivia' },
+        { seed: 'breeze', h: 590, name: '微风拂面', author: 'Emma' },
+        { seed: 'starry', h: 520, name: '星河入梦', author: 'Charlotte' },
+        { seed: 'sunset', h: 650, name: '落日余晖', author: 'Amelia' },
+        { seed: 'whisper', h: 470, name: '轻声细语', author: 'Harper' },
+        { seed: 'radiance', h: 530, name: '光影之间', author: 'Evelyn' },
+        { seed: 'dreamy', h: 600, name: '梦境边缘', author: 'Luna' },
+        { seed: 'cascade', h: 490, name: '飞瀑流泉', author: 'Chloe' },
+        { seed: 'mystic', h: 550, name: '秘境探索', author: 'Aria' },
+        { seed: 'aurora', h: 510, name: '极光之舞', author: 'Zoey' },
+        { seed: 'grace', h: 580, name: '优雅绽放', author: 'Lily' },
+        { seed: 'vintage', h: 460, name: '旧时光影', author: 'Nora' },
+        { seed: 'crystal', h: 610, name: '水晶之心', author: 'Stella' },
+        { seed: 'whimsy', h: 540, name: '奇思妙想', author: 'Hazel' },
+        { seed: 'solace', h: 490, name: '宁静致远', author: 'Aurora' },
+        { seed: 'bliss', h: 570, name: '幸福时光', author: 'Bella' },
+    ];
+
+    const wall = document.getElementById('wall');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+
+    seeds.forEach((item, i) => {
+        const w = 400;
+        // Vary aspect ratios for masonry effect
+        const heights = [440, 500, 560, 620, 480, 530, 590, 460, 610, 520, 550, 490, 570, 510, 600, 470, 540, 580, 500, 560];
+        const h = heights[i % heights.length];
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        // Shimmer placeholder
+        const shimmer = document.createElement('div');
+        shimmer.className = 'shimmer';
+        card.appendChild(shimmer);
+        
+        const img = document.createElement('img');
+        img.src = `https://picsum.photos/seed/${item.seed}/${w}/${h}`;
+        img.alt = item.name;
+        img.loading = 'lazy';
+        
+        img.onload = () => shimmer.remove();
+        img.onerror = () => shimmer.remove();
+        
+        const info = document.createElement('div');
+        info.className = 'info';
+        info.innerHTML = `<span class="name">${item.name}</span><span>${item.author}</span>`;
+        
+        card.appendChild(img);
+        card.appendChild(info);
+        
+        // Click to open lightbox
+        card.addEventListener('click', () => {
+            lightboxImg.src = `https://picsum.photos/seed/${item.seed}/800/900`;
+            lightbox.classList.add('active');
+        });
+        
+        wall.appendChild(card);
+    });
+</script>
+
+</body>
+</html>
